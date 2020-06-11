@@ -9,15 +9,17 @@ import (
 )
 
 var (
-	RunMode string
-	Host    string
-	Port    int
+	RunMode       string
+	JwtUserSecret string
+	Host          string
+	Port          int
 )
 
 type Config struct {
-	RunMode string `json:"run_mode"`
-	Host    string `json:"host"`
-	Port    int    `json:"port"`
+	RunMode       string `json:"run_mode"`
+	Host          string `json:"host"`
+	Port          int    `json:"port"`
+	JwtUserSecret string `json:"jwt_user_secret"`
 }
 
 func Exist(filename string) bool {
@@ -41,6 +43,6 @@ func InitConfig() error {
 	RunMode = cfg.RunMode
 	Host = cfg.Host
 	Port = cfg.Port
-
+	JwtUserSecret = cfg.JwtUserSecret
 	return nil
 }

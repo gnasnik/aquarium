@@ -1,5 +1,6 @@
 {
     "run_mode":"debug",
     "host":"127.0.0.1",
-    "port":9001
+    "port":9001,
+    "jwt_user_secret":"=uj2QsEM1sdfDJS"
 }
