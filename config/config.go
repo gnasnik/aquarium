@@ -34,12 +34,13 @@ func InitConfig() error {
 	if err != nil {
 		return err
 	}
-	var cfg *Config
+	var cfg = new(Config)
 	if err := json.Unmarshal(in, cfg); err != nil {
 		return err
 	}
 	RunMode = cfg.RunMode
 	Host = cfg.Host
 	Port = cfg.Port
+
 	return nil
 }

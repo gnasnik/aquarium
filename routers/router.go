@@ -1,11 +1,14 @@
 package routers
 
 import (
+	"aquarium/comm"
+	"aquarium/config"
 	"net/http"
+	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
-
 
 func options(c *gin.Context) {
 	if c.Request.Method == "OPTIONS" {
@@ -13,25 +16,24 @@ func options(c *gin.Context) {
 	}
 }
 
-
 func InitRouter() *gin.Engine {
-	var err error
+
 	gin.SetMode(config.RunMode)
 	r := gin.New()
 	if config.RunMode == gin.DebugMode {
 		c := cors.DefaultConfig()
-		c.AllowAllOrigins = []string{"*"}
-		c.AllowMethods = []{"GET","POST","OPTION"}
-		c.AllowHeader = []string{"*"}
+		c.AllowAllOrigins = true
+		c.AllowMethods = []string{"GET", "POST", "OPTION"}
+		c.AllowHeaders = []string{"*"}
 		c.MaxAge = time.Hour
 		r.Use(cors.New(c))
-	}else{
+	} else {
 		r.Use(options)
 	}
 
 	apiV1 := r.Group("/api/v1")
 	apiV1.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, ResponseSuccess(common.JsonObj{"pong": true}))
+		c.JSON(http.StatusOK, ResponseSuccess(comm.JsonObj{"pong": true}))
 	})
 
 	return r

@@ -1,22 +1,35 @@
 package main
 
 import (
+	"aquarium/config"
 	"aquarium/routers"
+	"aquarium/tools/env"
+	glog "aquarium/tools/log"
+	"fmt"
+	"log"
 	"net/http"
-	"aquarium/tool/log"
 )
 
 func main() {
-	if err := config.InitConfig(); err != nil{
-		log.Fatalf("init config failed",err)
+	if err := config.InitConfig(); err != nil {
+		log.Fatal("init config failed, %v", err)
 	}
+
+	logLevel := "info"
+	if config.RunMode == "debug" {
+		logLevel = "debug"
+	}
+
+	logger, _ := glog.NewLogger(env.LogPath, logLevel)
+	glog.SetDefault(logger)
+
 	router := routers.InitRouter()
 	srv := &http.Server{
 		Addr:    fmt.Sprintf("%s:%d", config.Host, config.Port),
-		Handle
-	}	
-	
+		Handler: router,
+	}
+
 	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		log.Fatalf("listen: %s\n", err)
+		log.Fatal("listen: %s\n", err)
 	}
 }

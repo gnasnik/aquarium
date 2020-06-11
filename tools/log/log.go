@@ -17,6 +17,7 @@ var LEVELS = map[string]zapcore.Level{
 	"info":  zapcore.InfoLevel,
 	"warn":  zapcore.WarnLevel,
 	"err":   zapcore.ErrorLevel,
+	"fatal": zapcore.FatalLevel,
 }
 
 type Logger struct {
@@ -34,7 +35,7 @@ type Logger struct {
 }
 
 func NewLogger(path string, level string) (*Logger, error) {
-	out := new(logger)
+	out := new(Logger)
 	out.rlog = new(lumberjack.Logger)
 
 	out.path = path
@@ -171,6 +172,26 @@ func (tlog *Logger) Debugw(format string, v ...interface{}) {
 	tlog.sugar.Debugw(format, v...)
 }
 
+func (tlog *Logger) Fatal(format string, v ...interface{}) {
+	tlog.checkRotate()
+	if !tlog.level.Enabled(zap.FatalLevel) {
+		return
+	}
+
+	defer tlog.log.Sync()
+	tlog.sugar.Fatalf(format, v...)
+}
+
+func (tlog *Logger) Fatalw(format string, v ...interface{}) {
+	tlog.checkRotate()
+	if !tlog.level.Enabled(zap.FatalLevel) {
+		return
+	}
+
+	defer tlog.log.Sync()
+	tlog.sugar.Fatalw(format, v...)
+}
+
 func GetDefault() *Logger {
 	return _logger
 }
@@ -214,4 +235,12 @@ func Warn(format string, v ...interface{}) {
 
 func Warnw(format string, v ...interface{}) {
 	_logger.Warnw(format, v...)
+}
+
+func Fatal(format string, v ...interface{}) {
+	_logger.Fatal(format, v...)
+}
+
+func Fatalw(format string, v ...interface{}) {
+	_logger.Fatalw(format, v...)
 }
