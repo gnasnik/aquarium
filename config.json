@@ -2,5 +2,6 @@
     "run_mode":"debug",
     "host":"127.0.0.1",
     "port":9001,
-    "jwt_user_secret":"=uj2QsEM1sdfDJS"
+    "jwt_user_secret":"=uj2QsEM1sdfDJS",
+    "dburl":"root:1234@tcp(127.0.0.1:3306)/aquarium?charset=utf8&clientFoundRows=true"
 }

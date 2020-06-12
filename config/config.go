@@ -13,13 +13,17 @@ var (
 	JwtUserSecret string
 	Host          string
 	Port          int
+	DBURL         string
 )
+
+var Configs *Config
 
 type Config struct {
 	RunMode       string `json:"run_mode"`
 	Host          string `json:"host"`
 	Port          int    `json:"port"`
 	JwtUserSecret string `json:"jwt_user_secret"`
+	DBURL         string `json:"dburl"`
 }
 
 func Exist(filename string) bool {
@@ -36,13 +40,15 @@ func InitConfig() error {
 	if err != nil {
 		return err
 	}
-	var cfg = new(Config)
-	if err := json.Unmarshal(in, cfg); err != nil {
+
+	Configs = new(Config)
+	if err := json.Unmarshal(in, Configs); err != nil {
 		return err
 	}
-	RunMode = cfg.RunMode
-	Host = cfg.Host
-	Port = cfg.Port
-	JwtUserSecret = cfg.JwtUserSecret
+
+	if err := initDB(); err != nil {
+		return err
+	}
+
 	return nil
 }

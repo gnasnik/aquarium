@@ -26,9 +26,9 @@ var (
 
 func InitRouter() *gin.Engine {
 
-	gin.SetMode(config.RunMode)
+	gin.SetMode(config.Configs.RunMode)
 	r := gin.New()
-	if config.RunMode == gin.DebugMode {
+	if config.Configs.RunMode == gin.DebugMode {
 		c := cors.DefaultConfig()
 		c.AllowAllOrigins = true
 		c.AllowMethods = []string{"GET", "POST", "OPTION"}

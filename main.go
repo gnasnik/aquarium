@@ -16,7 +16,7 @@ func main() {
 	}
 
 	logLevel := "info"
-	if config.RunMode == "debug" {
+	if config.Configs.RunMode == "debug" {
 		logLevel = "debug"
 	}
 
