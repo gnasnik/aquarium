@@ -4,7 +4,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 
 	"aquarium/sdk/mod"
-	adb "aquarium/tools/db"
+	adb "aquarium/utils/db"
 
 	"github.com/go-xorm/xorm"
 )

@@ -3,8 +3,8 @@ package main
 import (
 	"aquarium/config"
 	"aquarium/routers"
-	"aquarium/tools/env"
-	glog "aquarium/tools/log"
+	"aquarium/utils/env"
+	glog "aquarium/utils/log"
 	"fmt"
 	"log"
 	"net/http"

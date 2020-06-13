@@ -58,7 +58,7 @@ func JwtAuthenticatorForUser(ctx *gin.Context) (interface{}, error) {
 	return nil, jwt.ErrFailedAuthentication
 }
 
-func GuestAuth(userid string) (interface{}, error) {
+func GuestAuth(userid int64) (interface{}, error) {
 	// implement me
 	return nil, nil
 }

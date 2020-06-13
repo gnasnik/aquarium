@@ -4,7 +4,7 @@ import "time"
 
 // User
 type User struct {
-	ID        int64      `xorm:"'id' pk"`
+	ID        int64      `xorm:"'id' pk autoincr"`
 	Username  string     `xorm: "'username' varchar(25) unique_index"`
 	Password  string     `xorm:" not null"`
 	Guid      string     `json:"'guid'"`
