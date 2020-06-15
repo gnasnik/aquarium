@@ -25,3 +25,8 @@ func ListUser(sess *xorm.Session, id, level, size, page int64, order string) (to
 	err = sess.Where("level < ? OR id = ?", level, id).OrderBy(order).Limit(limit, start).Find(&users)
 	return
 }
+
+func CreateUser(sess *xorm.Session, user *mod.User) error {
+	_, err := sess.InsertOne(sess, user)
+	return err
+}
