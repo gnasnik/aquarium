@@ -1,0 +1,44 @@
+{"level":"\u001b[35mDEBUG\u001b[0m","ts":"2020-06-16T12:07:25.752+0800","caller":"routers/helper_jwt.go:63","msg":"JwtAuthenticatorForUser","pid":16974,"uid":1}
+{"level":"\u001b[35mDEBUG\u001b[0m","ts":"2020-06-16T12:07:44.225+0800","caller":"routers/helper_jwt.go:63","msg":"JwtAuthenticatorForUser","pid":16974,"uid":1}
+{"level":"\u001b[35mDEBUG\u001b[0m","ts":"2020-06-16T12:09:06.992+0800","caller":"routers/helper_jwt.go:63","msg":"JwtAuthenticatorForUser","pid":16974,"uid":1}
+{"level":"\u001b[35mDEBUG\u001b[0m","ts":"2020-06-16T12:14:33.782+0800","caller":"routers/helper_jwt.go:61","msg":"JwtAuthenticatorForUser","pid":18372,"uid":1,"pwd":"123344","type":"phone"}
+{"level":"\u001b[35mDEBUG\u001b[0m","ts":"2020-06-16T12:15:56.929+0800","caller":"routers/helper_jwt.go:61","msg":"JwtAuthenticatorForUser","pid":18685,"uid":1,"pwd":"123344","type":"phone"}
+{"level":"\u001b[35mDEBUG\u001b[0m","ts":"2020-06-16T12:37:11.419+0800","caller":"routers/helper_jwt.go:61","msg":"JwtAuthenticatorForUser","pid":19205,"uid":1,"pwd":"123344","type":"phone"}
+{"level":"\u001b[35mDEBUG\u001b[0m","ts":"2020-06-16T12:37:23.294+0800","caller":"routers/helper_jwt.go:61","msg":"JwtAuthenticatorForUser","pid":19345,"uid":1,"pwd":"123344","type":"phone"}
+{"level":"\u001b[35mDEBUG\u001b[0m","ts":"2020-06-16T12:39:17.927+0800","caller":"routers/helper_jwt.go:61","msg":"JwtAuthenticatorForUser","pid":20642,"uid":1,"pwd":"123344","type":"phone"}
+{"level":"\u001b[31mERROR\u001b[0m","ts":"2020-06-16T12:39:17.927+0800","caller":"routers/helper_jwt.go:80","msg":"get user failed","pid":20642,"err":"Table not found"}
+{"level":"\u001b[35mDEBUG\u001b[0m","ts":"2020-06-16T12:50:28.723+0800","caller":"routers/helper_jwt.go:61","msg":"JwtAuthenticatorForUser","pid":24775,"uid":1,"type":"phone"}
+{"level":"\u001b[31mERROR\u001b[0m","ts":"2020-06-16T12:50:28.723+0800","caller":"db/user.go:13","msg":"get user by id failed, Table not found","pid":24775}
+{"level":"\u001b[35mDEBUG\u001b[0m","ts":"2020-06-16T12:55:01.107+0800","caller":"routers/helper_jwt.go:61","msg":"JwtAuthenticatorForUser","pid":26875,"uid":1,"type":"phone"}
+{"level":"\u001b[31mERROR\u001b[0m","ts":"2020-06-16T12:55:01.107+0800","caller":"db/user.go:13","msg":"get user by id failed, Table not found","pid":26875}
+{"level":"\u001b[31mDPANIC\u001b[0m","ts":"2020-06-16T13:02:00.609+0800","caller":"log/log.go:213","msg":"Ignored key without a value.","pid":27817,"ignored":"Error 1146: Table 'aquarium.user' doesn't exist"}
+{"level":"\u001b[31mERROR\u001b[0m","ts":"2020-06-16T13:02:00.609+0800","caller":"db/user.go:45","msg":"create user failed","pid":27817}
+{"level":"\u001b[31mDPANIC\u001b[0m","ts":"2020-06-16T13:04:21.084+0800","caller":"log/log.go:213","msg":"Ignored key without a value.","pid":28489,"ignored":"Error 1062: Duplicate entry 'test' for key 'UQE_user_username'"}
+{"level":"\u001b[31mERROR\u001b[0m","ts":"2020-06-16T13:04:21.084+0800","caller":"db/user.go:45","msg":"create user failed","pid":28489}
+{"level":"\u001b[35mDEBUG\u001b[0m","ts":"2020-06-16T13:05:06.551+0800","caller":"routers/helper_jwt.go:61","msg":"JwtAuthenticatorForUser","pid":28489,"uid":1,"type":"phone"}
+{"level":"\u001b[31mERROR\u001b[0m","ts":"2020-06-16T13:05:06.551+0800","caller":"db/user.go:13","msg":"get user by id failed, Table not found","pid":28489}
+{"level":"\u001b[35mDEBUG\u001b[0m","ts":"2020-06-16T13:10:05.719+0800","caller":"routers/helper_jwt.go:61","msg":"JwtAuthenticatorForUser","pid":29607,"uid":1,"type":"phone"}
+{"level":"\u001b[31mERROR\u001b[0m","ts":"2020-06-16T13:10:05.719+0800","caller":"db/user.go:13","msg":"get user by id failed, Table not found","pid":29607}
+{"level":"\u001b[35mDEBUG\u001b[0m","ts":"2020-06-16T13:10:27.801+0800","caller":"routers/helper_jwt.go:61","msg":"JwtAuthenticatorForUser","pid":29607,"uid":1,"type":"phone"}
+{"level":"\u001b[31mERROR\u001b[0m","ts":"2020-06-16T13:10:27.801+0800","caller":"db/user.go:13","msg":"get user by id failed, Table not found","pid":29607}
+{"level":"\u001b[35mDEBUG\u001b[0m","ts":"2020-06-16T13:21:38.131+0800","caller":"routers/helper_jwt.go:61","msg":"JwtAuthenticatorForUser","pid":31153,"uid":1,"type":"phone"}
+{"level":"\u001b[31mERROR\u001b[0m","ts":"2020-06-16T13:21:38.132+0800","caller":"db/user.go:13","msg":"get user by id failed, Table not found","pid":31153}
+{"level":"\u001b[35mDEBUG\u001b[0m","ts":"2020-06-16T15:28:38.500+0800","caller":"routers/helper_jwt.go:61","msg":"JwtAuthenticatorForUser","pid":31905,"uid":1,"type":"phone"}
+{"level":"\u001b[31mERROR\u001b[0m","ts":"2020-06-16T15:28:38.502+0800","caller":"db/user.go:13","msg":"get user by id failed, Table not found","pid":31905}
+{"level":"\u001b[35mDEBUG\u001b[0m","ts":"2020-06-16T15:28:56.639+0800","caller":"routers/helper_jwt.go:61","msg":"JwtAuthenticatorForUser","pid":31905,"uid":1,"type":"phone"}
+{"level":"\u001b[31mERROR\u001b[0m","ts":"2020-06-16T15:28:56.639+0800","caller":"db/user.go:13","msg":"get user by id failed, Table not found","pid":31905}
+{"level":"\u001b[35mDEBUG\u001b[0m","ts":"2020-06-16T15:32:24.565+0800","caller":"routers/helper_jwt.go:61","msg":"JwtAuthenticatorForUser","pid":33408,"uid":1,"type":"phone"}
+{"level":"\u001b[34mINFO\u001b[0m","ts":"2020-06-16T15:32:24.575+0800","caller":"routers/helper_jwt.go:82","msg":"user &{1 test $2a$10$LmlkpL8o2DEvcjcSJlb0sOac46AT.xCCKEQZLi/kSCpyxJGiElFY2 1dO6asJ9gCooHRz0ZKnLXVMtbBE 0 false 2020-06-16 13:04:18 +0800 CST 2020-06-16 13:04:18 +0800 CST <nil>}","pid":33408}
+{"level":"\u001b[35mDEBUG\u001b[0m","ts":"2020-06-16T15:32:24.663+0800","caller":"routers/helper_jwt.go:90","msg":"PhoneAuth","pid":33408,"uid":1,"gid":"1dO6asJ9gCooHRz0ZKnLXVMtbBE"}
+{"level":"\u001b[35mDEBUG\u001b[0m","ts":"2020-06-16T15:37:35.606+0800","caller":"routers/helper_jwt.go:61","msg":"JwtAuthenticatorForUser","pid":36907,"uid":1,"type":"phone"}
+{"level":"\u001b[34mINFO\u001b[0m","ts":"2020-06-16T15:37:35.826+0800","caller":"routers/helper_jwt.go:82","msg":"user &{1 test $2a$10$LmlkpL8o2DEvcjcSJlb0sOac46AT.xCCKEQZLi/kSCpyxJGiElFY2 1dO6asJ9gCooHRz0ZKnLXVMtbBE 0 false 2020-06-16 13:04:18 +0800 CST 2020-06-16 13:04:18 +0800 CST <nil>}","pid":36907}
+{"level":"\u001b[35mDEBUG\u001b[0m","ts":"2020-06-16T15:37:35.929+0800","caller":"routers/helper_jwt.go:90","msg":"PhoneAuth","pid":36907,"uid":1,"gid":"1dO6asJ9gCooHRz0ZKnLXVMtbBE"}
+{"level":"\u001b[35mDEBUG\u001b[0m","ts":"2020-06-16T15:38:03.341+0800","caller":"routers/helper_jwt.go:61","msg":"JwtAuthenticatorForUser","pid":37063,"uid":1,"type":"phone"}
+{"level":"\u001b[34mINFO\u001b[0m","ts":"2020-06-16T15:38:03.347+0800","caller":"routers/helper_jwt.go:82","msg":"user &{1 test $2a$10$LmlkpL8o2DEvcjcSJlb0sOac46AT.xCCKEQZLi/kSCpyxJGiElFY2 1dO6asJ9gCooHRz0ZKnLXVMtbBE 0 false 2020-06-16 13:04:18 +0800 CST 2020-06-16 13:04:18 +0800 CST <nil>}","pid":37063}
+{"level":"\u001b[35mDEBUG\u001b[0m","ts":"2020-06-16T15:38:03.426+0800","caller":"routers/helper_jwt.go:90","msg":"PhoneAuth","pid":37063,"uid":1,"gid":"1dO6asJ9gCooHRz0ZKnLXVMtbBE"}
+{"level":"\u001b[35mDEBUG\u001b[0m","ts":"2020-06-16T15:41:25.179+0800","caller":"routers/helper_jwt.go:61","msg":"JwtAuthenticatorForUser","pid":38393,"uid":1,"type":"phone"}
+{"level":"\u001b[34mINFO\u001b[0m","ts":"2020-06-16T15:41:25.186+0800","caller":"routers/helper_jwt.go:82","msg":"user &{1 test $2a$10$LmlkpL8o2DEvcjcSJlb0sOac46AT.xCCKEQZLi/kSCpyxJGiElFY2 1dO6asJ9gCooHRz0ZKnLXVMtbBE 0 false 2020-06-16 13:04:18 +0800 CST 2020-06-16 13:04:18 +0800 CST <nil>}","pid":38393}
+{"level":"\u001b[35mDEBUG\u001b[0m","ts":"2020-06-16T15:42:19.888+0800","caller":"routers/helper_jwt.go:61","msg":"JwtAuthenticatorForUser","pid":38720,"uid":1,"type":"phone"}
+{"level":"\u001b[34mINFO\u001b[0m","ts":"2020-06-16T15:42:19.893+0800","caller":"routers/helper_jwt.go:82","msg":"user &{1 test $2a$10$LmlkpL8o2DEvcjcSJlb0sOac46AT.xCCKEQZLi/kSCpyxJGiElFY2 1dO6asJ9gCooHRz0ZKnLXVMtbBE 0 false 2020-06-16 13:04:18 +0800 CST 2020-06-16 13:04:18 +0800 CST <nil>}","pid":38720}
+{"level":"\u001b[35mDEBUG\u001b[0m","ts":"2020-06-16T15:42:56.613+0800","caller":"routers/helper_jwt.go:61","msg":"JwtAuthenticatorForUser","pid":39002,"uid":1,"type":"phone"}
+{"level":"\u001b[34mINFO\u001b[0m","ts":"2020-06-16T15:42:56.620+0800","caller":"routers/helper_jwt.go:82","msg":"user &{1 test $2a$10$LmlkpL8o2DEvcjcSJlb0sOac46AT.xCCKEQZLi/kSCpyxJGiElFY2 1dO6asJ9gCooHRz0ZKnLXVMtbBE 0 false 2020-06-16 13:04:18 +0800 CST 2020-06-16 13:04:18 +0800 CST <nil>}","pid":39002}

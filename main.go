@@ -25,7 +25,7 @@ func main() {
 
 	router := routers.InitRouter()
 	srv := &http.Server{
-		Addr:    fmt.Sprintf("%s:%d", config.Host, config.Port),
+		Addr:    fmt.Sprintf("%s:%d", config.Configs.Host, config.Configs.Port),
 		Handler: router,
 	}
 

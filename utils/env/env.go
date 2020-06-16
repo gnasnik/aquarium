@@ -28,6 +28,8 @@ func init() {
 	LogPath = LogDir + filepath.Base(os.Args[0]) + ".log"
 	LogDir, _ = filepath.Abs(LogDir)
 	LogPath, _ = filepath.Abs(LogPath)
+
+	println(LogPath)
 }
 
 func IsExist(path string) bool {

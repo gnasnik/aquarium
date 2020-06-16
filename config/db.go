@@ -10,22 +10,22 @@ import (
 )
 
 var (
-	DB *xorm.Engine
+	_defaultEngine *xorm.Engine
 )
 
 func initDB() error {
 	var err error
-	DB, err = adb.OpenDB("mysql", Configs.DBURL)
+
+	_defaultEngine, err = adb.OpenDB("mysql", Configs.DBURL)
 	if err != nil {
 		return err
 	}
 
-	DB.Sync2(new(mod.User))
-
+	_defaultEngine.Sync2(new(mod.User))
 	return nil
 }
 
 func Session() *xorm.Session {
-	sess := DB.NewSession()
+	sess := _defaultEngine.NewSession()
 	return sess
 }

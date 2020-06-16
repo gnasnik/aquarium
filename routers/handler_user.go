@@ -8,15 +8,17 @@ import (
 	"aquarium/sdk"
 	"aquarium/sdk/mod"
 
+	"aquarium/comm"
+
 	"github.com/gin-gonic/gin"
+	"github.com/segmentio/ksuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
 func CreateNewUserHandler(c *gin.Context) {
 	type post struct {
-		UserID   string `json:"user_id"`
+		Username string `json:"username"`
 		Password string `json:"password"`
-		// Role     string `json:"role"`
 	}
 
 	var p post
@@ -25,29 +27,33 @@ func CreateNewUserHandler(c *gin.Context) {
 		return
 	}
 
-	if p.UserID <= 0  || p.Password = "" {
+	if p.Username == "" || p.Password == "" {
 		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.InvalidRequestParams))
 		return
 	}
 
-	passHash ,err := bcrypt.GenerateFromPassword([]byte(p.Password),bcrypt.DefaultCost)
+	passHash, err := bcrypt.GenerateFromPassword([]byte(p.Password), bcrypt.DefaultCost)
 	if err != nil {
 		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.GeneratePasswordFail))
-		return 
+		return
 	}
 
 	user := &mod.User{
-		ID: p.UserID,
-		Password: p.Password,
+		// ID:       p.UserID,
+		Username: p.Username,
+		Guid:     ksuid.New().String(),
+		Password: string(passHash),
 	}
 
-	if err := sdk.CreateUser(context.Background(),user); err != nil {
+	if err := sdk.CreateUser(context.Background(), user); err != nil {
 		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.CreateNewUserFail))
-		return 
+		return
 	}
 
-	c.JSON(http.StatusOK, ResponseSuccess(common.JsonObj{
-		"user_id": p.UserID,
-		"password":  p.Password,
+	c.JSON(http.StatusOK, ResponseSuccess(comm.JsonObj{
+		"user_id":  user.ID,
+		"guid":     user.Guid,
+		"username": user.Username,
+		// "password": p.Password,
 	}))
-}
+}	

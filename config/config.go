@@ -8,14 +8,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-var (
-	RunMode       string
-	JwtUserSecret string
-	Host          string
-	Port          int
-	DBURL         string
-)
-
 var Configs *Config
 
 type Config struct {

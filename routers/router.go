@@ -43,7 +43,7 @@ func InitRouter() *gin.Engine {
 
 	jwtAuthUserMiddleware, err := jwt.New(&jwt.GinJWTMiddleware{
 		Realm:                 "User",
-		Key:                   []byte(config.JwtUserSecret),
+		Key:                   []byte(config.Configs.JwtUserSecret),
 		Timeout:               TokenTimeout,
 		MaxRefresh:            TokenRefreshTimeout,
 		IdentityKey:           identityKey,
@@ -69,7 +69,11 @@ func InitRouter() *gin.Engine {
 		c.JSON(http.StatusOK, ResponseSuccess(comm.JsonObj{"pong": true}))
 	})
 
-	apiV1.POST("/user/login", AuthUserMiddleware.LoginHandler)
+	usr := apiV1.Group("/user")
+	// only for test
+	usr.POST("/new", CreateNewUserHandler)
+
+	usr.POST("/login", AuthUserMiddleware.LoginHandler)
 
 	return r
 }
