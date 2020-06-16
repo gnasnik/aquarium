@@ -2,6 +2,7 @@ package routers
 
 import (
 	"aquarium/errors"
+	"aquarium/utils/log"
 	"context"
 	"net/http"
 
@@ -10,6 +11,7 @@ import (
 
 	"aquarium/comm"
 
+	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/segmentio/ksuid"
 	"golang.org/x/crypto/bcrypt"
@@ -56,4 +58,21 @@ func CreateNewUserHandler(c *gin.Context) {
 		"username": user.Username,
 		// "password": p.Password,
 	}))
-}	
+}
+
+func GetUserHandler(c *gin.Context) {
+	claims := jwt.ExtractClaims(c)
+	uid := int64(claims["user_id"].(float64))
+
+	log.Debugw("GetUserHandler", "uid", uid)
+	// username := c.Query("username")
+	user, err := sdk.GetUserByID(context.Background(), uid)
+	if err != nil {
+		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.UserNotFound))
+		return
+	}
+
+	c.JSON(http.StatusOK, ResponseSuccess(comm.JsonObj{
+		"user": user.ToPlain(),
+	}))
+}

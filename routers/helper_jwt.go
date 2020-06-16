@@ -46,7 +46,7 @@ func JwtIdentityHandler(ctx *gin.Context) interface{} {
 	claims := jwt.ExtractClaims(ctx)
 	return &authResponse{
 		Guid:   claims[identityKey].(string),
-		UserID: claims["user_id"].(int64),
+		UserID: int64(claims["user_id"].(float64)),
 	}
 }
 
