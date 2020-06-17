@@ -76,5 +76,6 @@ func InitRouter() *gin.Engine {
 	usr.POST("/login", AuthUserMiddleware.LoginHandler)
 	usr.Use(AuthUserMiddleware.MiddlewareFunc())
 	usr.GET("/info", GetUserHandler)
+	usr.GET("/list", ListUserHandler)
 	return r
 }
