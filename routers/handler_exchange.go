@@ -69,7 +69,7 @@ func PutExchangeHandler(c *gin.Context) {
 
 	var req mod.Exchange
 	if err := c.ShouldBindJSON(&req); err != nil {
-		log.Err("parse param failed", "err", err)
+		log.Errw("parse param failed", "err", err)
 		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.MissingRequestParams))
 		return
 	}

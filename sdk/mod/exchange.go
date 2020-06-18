@@ -3,7 +3,7 @@ package mod
 import "time"
 
 type Exchange struct {
-	ID        int64      `xorm:"'id' pk" json:"id"`
+	ID        int64      `xorm:"'id' pk autoincr" json:"id"`
 	UserID    int64      `xorm:"'user_id' index" json:"userId"`
 	Name      string     `xorm:"'name' varchar(50)" json:"name"`
 	Type      string     `xorm:"'type' varchar(50)" json:"type"`
