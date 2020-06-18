@@ -21,7 +21,10 @@ func initDB() error {
 		return err
 	}
 
-	_defaultEngine.Sync2(new(mod.User))
+	_defaultEngine.Sync2(
+		new(mod.User),
+		new(mod.Exchange),
+	)
 	return nil
 }
 

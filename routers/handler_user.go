@@ -37,7 +37,7 @@ func CreateNewUserHandler(c *gin.Context) {
 
 	passHash, err := bcrypt.GenerateFromPassword([]byte(p.Password), bcrypt.DefaultCost)
 	if err != nil {
-		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.GeneratePasswordFail))
+		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.GeneratePasswordFailed))
 		return
 	}
 
@@ -49,7 +49,7 @@ func CreateNewUserHandler(c *gin.Context) {
 	}
 
 	if err := sdk.CreateUser(context.Background(), user); err != nil {
-		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.CreateNewUserFail))
+		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.CreateNewUserFailed))
 		return
 	}
 
@@ -81,6 +81,7 @@ func GetUserHandler(c *gin.Context) {
 func ListUserHandler(c *gin.Context) {
 	claims := jwt.ExtractClaims(c)
 	uid := int64(claims["user_id"].(float64))
+	level := int64(claims["level"].(float64))
 	size := com.StrTo(c.Query("size")).MustInt64()
 	page := com.StrTo(c.Query("page")).MustInt64()
 	order := c.Query("order")
@@ -93,14 +94,8 @@ func ListUserHandler(c *gin.Context) {
 		page = 1
 	}
 
-	user, err := sdk.GetUserByID(context.Background(), uid)
-	if err != nil {
-		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.UserNotFound))
-		return
-	}
-
 	total, users, err := sdk.ListUser(context.Background(),
-		user.ID, user.Level, size, page, order)
+		uid, level, size, page, order)
 	if err != nil {
 		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.UserNotFound))
 		return

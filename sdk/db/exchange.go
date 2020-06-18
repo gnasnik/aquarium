@@ -1,0 +1,59 @@
+package db
+
+import (
+	"aquarium/sdk/mod"
+	"aquarium/utils/log"
+
+	"github.com/go-xorm/xorm"
+)
+
+func ListExchange(sess *xorm.Session, ids []interface{}, size, page int64, order string) (int64, []*mod.Exchange, error) {
+	var out []*mod.Exchange
+	bean := &mod.Exchange{}
+	total, err := sess.In("user_id", ids...).Count(bean)
+	if err != nil {
+		log.Err("count exchange failed, %v", err)
+		return 0, nil, err
+	}
+	start, limit := int((page-1)*size), int(size)
+	err = sess.In("user_id", ids...).OrderBy(order).Limit(limit, start).Find(&out)
+	if err != nil {
+		log.Err("list exchange failed, %v", err)
+		return 0, nil, err
+	}
+	return total, out, nil
+}
+
+func GetExchangeByID(sess *xorm.Session, id int64) (*mod.Exchange, error) {
+	out := &mod.Exchange{ID: id}
+	found, err := sess.Get(out)
+	if err != nil {
+		log.Err("get exchange by id failed, %v", err)
+		return nil, err
+	}
+
+	if !found {
+		return nil, nil
+	}
+
+	return out, nil
+}
+
+func AddExchange(sess *xorm.Session, exchange *mod.Exchange) error {
+	_, err := sess.InsertOne(exchange)
+	if err != nil {
+		log.Err("add exchange failed, %v", err)
+		return err
+	}
+	return nil
+}
+
+func UpdateExchange(sess *xorm.Session, exchange *mod.Exchange) error {
+	cond := &mod.Exchange{ID: exchange.ID}
+	_, err := sess.Update(exchange, cond)
+	if err != nil {
+		log.Err("update exchange failed, %v", err)
+		return err
+	}
+	return nil
+}

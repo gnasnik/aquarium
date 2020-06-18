@@ -15,15 +15,25 @@ const (
 	InvalidRequestParams ErrorCode = iota + 10001
 	MissingRequestParams
 	UnknownLoginType
-	TokenCreateFail
+	TokenCreateFailed
 )
 
 // user error
 const (
-	GeneratePasswordFail ErrorCode = iota + 20001
-	CreateNewUserFail
+	GeneratePasswordFailed ErrorCode = iota + 20001
+	CreateNewUserFailed
 	UserNotFound
 	InvalidPassword
+	ListUserFailed
+)
+
+// exchange error
+const (
+	ListExchangeFailed ErrorCode = iota + 30001
+	AddExchangeFailed
+	UpdateExchangeFailed
+	ExchangeNotFound
+	InvalidExchangeID
 )
 
 var Error = map[ErrorCode]error{
@@ -31,13 +41,20 @@ var Error = map[ErrorCode]error{
 	MissingRequestParams: errors.New("missing request params"),
 	UnknownLoginType:     errors.New("unkown login type"),
 	UnknownErr:           errors.New("unkown error"),
-	TokenCreateFail:      errors.New("token create failed"),
+	TokenCreateFailed:    errors.New("token create failed"),
 
 	// user
-	GeneratePasswordFail: errors.New("generate password fail"),
-	CreateNewUserFail:    errors.New("create new user fail"),
-	UserNotFound:         errors.New("user not found"),
-	InvalidPassword:      errors.New("invalid password"),
+	GeneratePasswordFailed: errors.New("generate password fail"),
+	CreateNewUserFailed:    errors.New("create new user failed"),
+	UserNotFound:           errors.New("user not found"),
+	InvalidPassword:        errors.New("invalid password"),
+	ListUserFailed:         errors.New("list user failed"),
+
+	ListExchangeFailed:   errors.New("list exchange failed"),
+	AddExchangeFailed:    errors.New("add exchange failed"),
+	UpdateExchangeFailed: errors.New("update exchange failed"),
+	ExchangeNotFound:     errors.New("exchange not found"),
+	InvalidExchangeID:    errors.New("exchange id must not emtpty"),
 }
 
 func GetMsg(e ErrorCode) string {

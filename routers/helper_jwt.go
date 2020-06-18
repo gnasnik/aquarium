@@ -25,6 +25,7 @@ type login struct {
 type authResponse struct {
 	Guid   string `json:"guid"`
 	UserID int64  `json:"user_id"`
+	Level  int64  `json:"level"`
 }
 
 type userAuthInfo struct {
@@ -37,6 +38,7 @@ func JwtPayloadFunc(data interface{}) jwt.MapClaims {
 		return jwt.MapClaims{
 			identityKey: v.Guid,
 			"user_id":   v.UserID,
+			"level":     v.Level,
 		}
 	}
 	return jwt.MapClaims{}
@@ -47,6 +49,7 @@ func JwtIdentityHandler(ctx *gin.Context) interface{} {
 	return &authResponse{
 		Guid:   claims[identityKey].(string),
 		UserID: int64(claims["user_id"].(float64)),
+		Level:  int64(claims["level"].(float64)),
 	}
 }
 
@@ -87,7 +90,7 @@ func PhoneAuth(userid int64, password string, checkAdmin bool) (interface{}, err
 	// 	return nil, nil
 	// }
 	// TODO: check user role
-	return &authResponse{Guid: user.Guid, UserID: user.ID}, nil
+	return &authResponse{Guid: user.Guid, UserID: user.ID, Level: user.Level}, nil
 }
 
 func JwtAuthorizatorForUser(data interface{}, ctx *gin.Context) bool {
@@ -111,7 +114,7 @@ func JwtUserLoginResponse(ctx *gin.Context, code int, token string, expire time.
 	_, err = json.Marshal(&authInfo)
 	if err != nil {
 		log.Errw("create auth info fail", "id", userID, "err", err)
-		ctx.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.TokenCreateFail))
+		ctx.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.TokenCreateFailed))
 		return
 	}
 
