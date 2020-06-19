@@ -57,3 +57,13 @@ func UpdateExchange(sess *xorm.Session, exchange *mod.Exchange) error {
 	}
 	return nil
 }
+
+func DeleteExchange(sess *xorm.Session, ids []int64) error {
+	exchange := &mod.Exchange{}
+	_, err := sess.In("id", ids).Delete(exchange)
+	if err != nil {
+		log.Err("delete exchange failed, %v", err)
+		return err
+	}
+	return nil
+}

@@ -14,16 +14,9 @@ import (
 	"github.com/unknwon/com"
 )
 
-func TypesExchangeHandler(c *gin.Context) {
-	c.JSON(http.StatusOK, ResponseSuccess(comm.JsonObj{
-		"types": ExchangeTypes,
-	}))
-}
-
-func ListExchangeHandler(c *gin.Context) {
+func ListAlgorithmHandler(c *gin.Context) {
 	claims := jwt.ExtractClaims(c)
 	uid := int64(claims["user_id"].(float64))
-	level := int64(claims["level"].(float64))
 
 	page := com.StrTo(c.Query("page")).MustInt64()
 	size := com.StrTo(c.Query("size")).MustInt64()
@@ -38,31 +31,20 @@ func ListExchangeHandler(c *gin.Context) {
 	}
 
 	ctx := context.Background()
-	_, users, err := sdk.ListUser(ctx, uid, level, -1, 1, order)
+	total, Algorithms, err := sdk.ListAlgorithm(ctx, uid, size, page, order)
 	if err != nil {
-		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.ListUserFailed))
-		return
-	}
-
-	var ids []interface{}
-	for _, x := range users {
-		ids = append(ids, x.ID)
-	}
-
-	total, exchanges, err := sdk.ListExchange(ctx, ids, size, page, order)
-	if err != nil {
-		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.ListExchangeFailed))
+		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.ListAlgorithmFailed))
 		return
 	}
 
 	c.JSON(http.StatusOK, ResponseSuccess(comm.JsonObj{
-		"total":     total,
-		"exchanges": exchanges,
+		"total":      total,
+		"Algorithms": Algorithms,
 	}))
 
 }
 
-func PutExchangeHandler(c *gin.Context) {
+func PutAlgorithmHandler(c *gin.Context) {
 	claims := jwt.ExtractClaims(c)
 	uid := int64(claims["user_id"].(float64))
 
@@ -73,7 +55,7 @@ func PutExchangeHandler(c *gin.Context) {
 		return
 	}
 
-	var req mod.Exchange
+	var req mod.Algorithm
 	if err := c.ShouldBindJSON(&req); err != nil {
 		log.Errw("parse param failed", "err", err)
 		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.MissingRequestParams))
@@ -81,17 +63,17 @@ func PutExchangeHandler(c *gin.Context) {
 	}
 
 	if req.ID > 0 {
-		exchange, err := sdk.GetExchangeByID(ctx, req.ID)
+		algorithm, err := sdk.GetAlgorithmByID(ctx, req.ID)
 		if err != nil {
-			c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.ExchangeNotFound))
+			c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.AlgorithmNotFound))
 			return
 		}
-		exchange.Name = req.Name
-		exchange.Type = req.Type
-		exchange.AccessKey = req.AccessKey
-		exchange.SecretKey = req.SecretKey
-		if err := sdk.UpdateExchange(ctx, exchange); err != nil {
-			c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.UpdateExchangeFailed))
+		algorithm.Name = req.Name
+		algorithm.Description = req.Description
+		algorithm.Script = req.Script
+		algorithm.EvnDefault = req.EvnDefault
+		if err := sdk.UpdateAlgorithm(ctx, algorithm); err != nil {
+			c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.UpdateAlgorithmFailed))
 			return
 		}
 
@@ -99,15 +81,15 @@ func PutExchangeHandler(c *gin.Context) {
 		return
 	}
 
-	if err := sdk.AddExchange(ctx, &req); err != nil {
-		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.AddExchangeFailed))
+	if err := sdk.AddAlgorithm(ctx, &req); err != nil {
+		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.AddAlgorithmFailed))
 		return
 	}
 
 	c.JSON(http.StatusOK, ResponseSuccess(comm.JsonObj{}))
 }
 
-func DeleteExchangeHandler(c *gin.Context) {
+func DeleteAlgorithmHandler(c *gin.Context) {
 	claims := jwt.ExtractClaims(c)
 	uid := int64(claims["user_id"].(float64))
 
@@ -128,8 +110,8 @@ func DeleteExchangeHandler(c *gin.Context) {
 		return
 	}
 
-	if err := sdk.DeleteExchange(ctx, p.IDs); err != nil {
-		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.DeleteExchangeFailed))
+	if err := sdk.DeleteAlgorithm(ctx, p.IDs); err != nil {
+		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.DeleteAlgorithmFailed))
 		return
 	}
 

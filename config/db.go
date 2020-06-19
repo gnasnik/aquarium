@@ -24,6 +24,8 @@ func initDB() error {
 	_defaultEngine.Sync2(
 		new(mod.User),
 		new(mod.Exchange),
+		new(mod.Algorithm),
+		new(mod.Trader),
 	)
 	return nil
 }

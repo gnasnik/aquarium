@@ -22,3 +22,7 @@ func AddExchange(ctx context.Context, exchange *mod.Exchange) error {
 func UpdateExchange(ctx context.Context, exchange *mod.Exchange) error {
 	return db.UpdateExchange(config.Session(), exchange)
 }
+
+func DeleteExchange(ctx context.Context, ids []int64) error {
+	return db.DeleteExchange(config.Session(), ids)
+}

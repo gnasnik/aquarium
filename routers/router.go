@@ -79,8 +79,17 @@ func InitRouter() *gin.Engine {
 	usr.GET("/list", ListUserHandler)
 
 	exc := apiV1.Group("/exchange")
+	exc.GET("/types", TypesExchangeHandler)
 	exc.Use(AuthUserMiddleware.MiddlewareFunc())
 	exc.GET("/list", ListExchangeHandler)
 	exc.POST("/put", PutExchangeHandler)
+	exc.POST("/del", DeleteExchangeHandler)
+
+	algo := apiV1.Group("/algorithm")
+	algo.Use(AuthUserMiddleware.MiddlewareFunc())
+	algo.GET("/list", ListAlgorithmHandler)
+	algo.POST("/put", PutAlgorithmHandler)
+	algo.POST("/del", DeleteAlgorithmHandler)
+
 	return r
 }

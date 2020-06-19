@@ -34,6 +34,17 @@ const (
 	UpdateExchangeFailed
 	ExchangeNotFound
 	InvalidExchangeID
+	DeleteExchangeFailed
+)
+
+// algorithm error
+const (
+	ListAlgorithmFailed ErrorCode = iota + 40001
+	AddAlgorithmFailed
+	UpdateAlgorithmFailed
+	AlgorithmNotFound
+	InvalidAlgorithmID
+	DeleteAlgorithmFailed
 )
 
 var Error = map[ErrorCode]error{
@@ -55,6 +66,14 @@ var Error = map[ErrorCode]error{
 	UpdateExchangeFailed: errors.New("update exchange failed"),
 	ExchangeNotFound:     errors.New("exchange not found"),
 	InvalidExchangeID:    errors.New("exchange id must not emtpty"),
+	DeleteExchangeFailed: errors.New("delete exchange failed"),
+
+	ListAlgorithmFailed:   errors.New("list algorithm failed"),
+	AddAlgorithmFailed:    errors.New("add algorithm failed"),
+	UpdateAlgorithmFailed: errors.New("update algorithm failed"),
+	AlgorithmNotFound:     errors.New("algorithm not found"),
+	InvalidAlgorithmID:    errors.New("algorithm id must not emtpty"),
+	DeleteAlgorithmFailed: errors.New("delete algorithm failed"),
 }
 
 func GetMsg(e ErrorCode) string {
