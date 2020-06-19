@@ -14,7 +14,16 @@ type Trader struct {
 	UpdatedAt   time.Time  `xorm:"updated" json:"updatedAt"`
 	DeletedAt   *time.Time `xorm:"deleted" sql:"index" json:"-"`
 
-	Exchanges []Exchange `xorm:"-" json:"exchanges"`
-	Status    int64      `xorm:"-" json:"status"`
-	Algorithm Algorithm  `xorm:"-" json:"algorithm"`
+	Exchanges []*Exchange `xorm:"-" json:"exchanges"`
+	Status    int64       `xorm:"-" json:"status"`
+	Algorithm *Algorithm  `xorm:"-" json:"algorithm"`
+}
+
+// TraderExchange struct
+type TraderExchange struct {
+	ID         int64 `xorm:"'id' pk autoincr"`
+	TraderID   int64 `xorm:"'trader_id'" index`
+	ExchangeID int64 `xorm:"'exchange_id' index"`
+
+	Exchange `xorm:"-"`
 }

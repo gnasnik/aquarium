@@ -67,3 +67,30 @@ func DeleteExchange(sess *xorm.Session, ids []int64) error {
 	}
 	return nil
 }
+
+func AddTraderExchange(sess *xorm.Session, t *mod.TraderExchange) error {
+	_, err := sess.InsertOne(t)
+	if err != nil {
+		log.Err("add trader exchange failed, %v", err)
+		return err
+	}
+	return nil
+}
+
+func GetExchangeFromTraderID(sess *xorm.Session, traderID int64) (*mod.Exchange, error) {
+	sql := `SELECT e.* FROM exchanges e, trader_exchanges r WHERE r.trader_id
+	= ? AND e.id = r.exchange_id`
+
+	var out *mod.Exchange
+	found, err := sess.Sql(sql, traderID).Get(out)
+	if err != nil {
+		log.Err("get exchange by trader id failed, %v", err)
+		return nil, err
+	}
+
+	if !found {
+		return nil, nil
+	}
+
+	return out, nil
+}

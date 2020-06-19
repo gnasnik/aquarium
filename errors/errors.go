@@ -47,6 +47,16 @@ const (
 	DeleteAlgorithmFailed
 )
 
+// trader error
+const (
+	ListTraderFailed ErrorCode = iota + 50001
+	AddTraderFailed
+	UpdateTraderFailed
+	TraderNotFound
+	InvalidTraderID
+	DeleteTraderFailed
+)
+
 var Error = map[ErrorCode]error{
 	InvalidRequestParams: errors.New("invalid request params"),
 	MissingRequestParams: errors.New("missing request params"),
@@ -74,6 +84,13 @@ var Error = map[ErrorCode]error{
 	AlgorithmNotFound:     errors.New("algorithm not found"),
 	InvalidAlgorithmID:    errors.New("algorithm id must not emtpty"),
 	DeleteAlgorithmFailed: errors.New("delete algorithm failed"),
+
+	ListTraderFailed:   errors.New("list trader failed"),
+	AddTraderFailed:    errors.New("add trader failed"),
+	UpdateTraderFailed: errors.New("update trader failed"),
+	TraderNotFound:     errors.New("trader not found"),
+	InvalidTraderID:    errors.New("trader id must not emtpty"),
+	DeleteTraderFailed: errors.New("delete trader failed"),
 }
 
 func GetMsg(e ErrorCode) string {
