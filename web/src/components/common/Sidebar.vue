@@ -1,5 +1,6 @@
 <template>
     <div class="sidebar">
+       
         <el-menu
             class="sidebar-el-menu"
             :default-active="onRoutes"
@@ -10,6 +11,9 @@
             unique-opened
             router
         >
+        <div class="header" v-if="!collapse">
+        <div class="logo">Aquarium</div>
+        </div>
             <template v-for="item in items">
                 <template v-if="item.subs">
                     <el-submenu :index="item.index" :key="item.index">
@@ -45,14 +49,14 @@
                     </el-menu-item>
                 </template>
             </template>
-        </el-menu>
-         <!-- 折叠按钮 -->
+            <!-- 折叠按钮 -->
         <div class="bottom-collapse">
             <div class="collapse-btn" @click="collapseChage">
                 <i v-if="!collapse" class="el-icon-fk-left"></i>
                 <i v-else class="el-icon-fk-right"></i>
             </div>
         </div>
+        </el-menu>
     </div>
 </template>
 
@@ -133,19 +137,22 @@ export default {
     display: block;
     position: absolute;
     left: 0;
-    /* top: 70px; */
+    /* top: 50px; */
     top: 0;
     bottom: 0; 
     overflow-y: scroll;
-    padding-bottom: 42px;
+    /* padding-bottom: 42px; */
 }
 .bottom-collapse {
+    position: absolute;
+    bottom:0;
+    width: 100%;
     background-color:rgb(40,52,70);
     color:#fff;
 }
 
 .collapse-btn {
-    height: 56px;
+    height: 42px;
     text-align: center;
     line-height: 42px;
     cursor: pointer;
@@ -158,5 +165,18 @@ export default {
 }
 .sidebar > ul {
     height: 100%;
+}
+.header {
+    box-sizing: border-box;
+    width: 100%;
+    height:70px;
+    font-size: 22px;
+    color: #fff;
+}
+.header .logo {
+    float:left;
+    text-align: center;
+    width: 100%;
+    line-height: 70px;
 }
 </style>

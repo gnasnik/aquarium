@@ -1,6 +1,6 @@
 <template>
     <div class="header">
-       
+    <div class="logo"></div>
     </div>
 </template>
 <script>
@@ -11,6 +11,12 @@ export default {
             collapse: false,
             fullscreen: false,
         };
+    },
+    methods:{
+        collapseChage() {
+            this.collapse = !this.collapse;
+            bus.$emit('collapse', this.collapse);
+        },
     },
     mounted() {
         if (document.body.clientWidth < 1200) {
@@ -35,8 +41,9 @@ export default {
     line-height: 70px;
 }
 .header .logo {
-    float: left;
-    width: 250px;
+    float:left;
+    text-align: center;
+    width: 100px;
     line-height: 70px;
 }
 </style>
