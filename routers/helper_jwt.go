@@ -79,11 +79,13 @@ func GuestAuth(userid int64) (interface{}, error) {
 
 func PhoneAuth(userid int64, password string, checkAdmin bool) (interface{}, error) {
 	user, err := sdk.GetUserByID(context.Background(), userid)
-	if err != nil {
+	if err != nil || user == nil {
+		log.Info("get user byid  failed %v", err)
 		return nil, errors.Error[errors.UserNotFound]
 	}
 	log.Info("user %v", user)
-	if bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+		log.Info("check password failed %v", err)
 		return nil, errors.Error[errors.InvalidPassword]
 	}
 	// if user.IsBanned {
@@ -98,11 +100,18 @@ func JwtAuthorizatorForUser(data interface{}, ctx *gin.Context) bool {
 	// 	return true
 	// }
 	// return false
-	return true
+	return false
 }
 
 func JwtUnauthorized(ctx *gin.Context, code int, message string) {
-	ResponseFailWithErrorMsg(code, message)
+	if code == 401 && message == "Token is expired" {
+		ctx.JSON(http.StatusOK, ResponseFailWithErrorMsg(code, message))
+		return
+	} else if code == 401 {
+		ctx.JSON(http.StatusOK, ResponseFailWithErrorMsg(http.StatusForbidden, message))
+		return
+	}
+	ctx.JSON(code, ResponseFailWithErrorMsg(code, message))
 }
 
 func JwtUserLoginResponse(ctx *gin.Context, code int, token string, expire time.Time) {

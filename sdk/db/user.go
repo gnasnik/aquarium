@@ -9,10 +9,13 @@ import (
 
 func GetUserByID(sess *xorm.Session, id int64) (*mod.User, error) {
 	user := &mod.User{}
-	_, err := sess.ID(id).Get(user)
+	found, err := sess.ID(id).Get(user)
 	if err != nil {
 		log.Err("get user by id failed, %v", err)
 		return nil, err
+	}
+	if !found {
+		return nil, nil
 	}
 	return user, nil
 }
