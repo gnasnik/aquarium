@@ -39,7 +39,7 @@ func ListAlgorithmHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, ResponseSuccess(comm.JsonObj{
 		"total":      total,
-		"Algorithms": Algorithms,
+		"algorithms": Algorithms,
 	}))
 
 }
