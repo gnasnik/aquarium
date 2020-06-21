@@ -79,7 +79,7 @@ export default {
                 },
                 {
                     icon: 'el-icon-fk-user',
-                    index: 'user',
+                    index: 'userinfo',
                     title: 'User'
                 },
                 {
@@ -112,7 +112,7 @@ export default {
           cancelButtonText: 'Cancel',
           type: 'warning',
         }).then(() => {
-            // localStorage.removeItem('ms_username', this.param.username);
+            localStorage.removeItem('ms_username');
             this.$router.push("/login")
         });
       }

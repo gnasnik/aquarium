@@ -6,6 +6,12 @@
             <div class="handle-box">
                 <el-button
                     type="primary"
+                    icon="el-icon-refresh-right"
+                    class="handle-del mr10"
+                  
+                >Reload</el-button>
+                <el-button
+                    type="primary"
                     icon="el-icon-plus"
                     class="handle-del mr10"
                     
@@ -33,11 +39,11 @@
                 @selection-change="handleSelectionChange"
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-                <el-table-column prop="username" label="Username"></el-table-column>
-                <el-table-column prop="level" label="Level"></el-table-column>
-                <el-table-column prop="created" label="CreatedAt"></el-table-column>
-                <el-table-column prop="updated" label="UpdatedAt"></el-table-column>
+                <el-table-column prop="ID" label="ID" width="55" align="center"></el-table-column>
+                <el-table-column prop="Username" label="Username"></el-table-column>
+                <el-table-column prop="Level" label="Level"></el-table-column>
+                <el-table-column prop="CreatedAt" label="CreatedAt"></el-table-column>
+                <el-table-column prop="UpdatedAt" label="UpdatedAt"></el-table-column>
 
                 <el-table-column label="Opreation" width="180" align="center">
                     <template slot-scope="scope">
@@ -68,19 +74,19 @@
         </div>
 
         <!-- 编辑弹出框 -->
-        <el-dialog title="Exchange-" :visible.sync="editVisible" width="30%">
-            <el-form ref="form" :model="form" label-width="70px">
+        <el-dialog title="User-" :visible.sync="editVisible" width="30%">
+            <el-form ref="form" :model="form" label-width="100px" label-position="left">
                 <el-form-item label="Username">
-                    <el-input v-model="form.username"></el-input>
+                    <el-input v-model="form.Username"></el-input>
                 </el-form-item>
                 <el-form-item label="Level">
-                    <el-input v-model="form.level"></el-input>
+                    <el-input v-model="form.Level"></el-input>
                 </el-form-item>
                  <el-form-item label="Password">
-                    <el-input v-model="form.password"></el-input>
+                    <el-input v-model="form.Password"></el-input>
                 </el-form-item>
                  <el-form-item label="Repeat">
-                    <el-input v-model="form.repeat"></el-input>
+                    <el-input v-model="form.Repeat"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -92,16 +98,14 @@
 </template>
 
 <script>
-import { fetchData } from '../../api/index';
+import { userListReq } from '../../api/index';
 export default {
     name: 'basetable',
     data() {
         return {
             query: {
-                address: '',
-                name: '',
-                pageIndex: 1,
-                pageSize: 10
+                page: 1,
+                size: 10
             },
             tableData: [],
             multipleSelection: [],
@@ -114,15 +118,17 @@ export default {
         };
     },
     created() {
-        this.getData();
+        this.getUserList();
     },
     methods: {
-        // 获取 easy-mock 的模拟数据
-        getData() {
-            fetchData(this.query).then(res => {
-                console.log(res);
-                this.tableData = res.list;
-                this.pageTotal = res.pageTotal || 50;
+        getUserList() {
+            var token = localStorage.getItem("token");
+            console.log("===>token",token)
+            userListReq(this.query,token).then(res => {
+                if (res.success) {
+                    this.tableData = res.data.users;
+                    this.pageTotal = res.data.total || 50;
+                }
             });
         },
         // 触发搜索按钮

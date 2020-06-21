@@ -8,12 +8,19 @@
             </el-breadcrumb> -->
         </div>
         <div class="container">
+            
             <div class="handle-box">
+                 <el-button
+                    type="primary"
+                    icon="el-icon-refresh"
+                    class="handle-del mr10"
+                    @click="reloadData"
+                >Reload</el-button>
                   <el-button
                     type="primary"
                     icon="el-icon-plus"
                     class="handle-del mr10"
-                    
+                    @click="addAlgorithm"
                 >Add</el-button>
                 <el-button
                     type="primary"
@@ -83,24 +90,24 @@
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="editVisible = false">取 消</el-button>
-                <el-button type="primary" @click="saveEdit">确 定</el-button>
+                <el-button @click="editVisible = false">Cancel</el-button>
+                <el-button type="primary" @click="saveEdit">OK</el-button>
             </span>
         </el-dialog>
     </div>
 </template>
 
 <script>
-import { fetchData } from '../../api/index';
+import { algorithmListReq, addAlgorithmReq, delAlgorithmReq } from '../../api/algorithm';
 export default {
     name: 'basetable',
     data() {
         return {
             query: {
-                address: '',
-                name: '',
-                pageIndex: 1,
-                pageSize: 10
+                // address: '',
+                // name: '',
+                page: 1,
+                size: 10
             },
             tableData: [],
             multipleSelection: [],
@@ -113,16 +120,30 @@ export default {
         };
     },
     created() {
+        this.token = localStorage.getItem("token");
         this.getData();
     },
     methods: {
-        // 获取 easy-mock 的模拟数据
         getData() {
-            fetchData(this.query).then(res => {
-                console.log(res);
-                this.tableData = res.list;
-                this.pageTotal = res.pageTotal || 50;
+            algorithmListReq(this.query,this.token).then(res => {
+                if (res.success) {
+                    this.tableData = res.data.exchanges;
+                    this.pageTotal = res.data.total || 50;
+                }else{
+                    this.$message.error(res.msg || "unkown err");
+                }  
             });
+        },
+        reloadData() {
+            this.getData();
+        },
+        addAlgorithm() {
+            this.$message.error("implemet me")
+            // this.idx = 0;
+            // this.form = {};
+            // this.edit = false;
+            // this.dialogTitle = 'Add Algorithm'
+            // this.editVisible = true;
         },
         // 触发搜索按钮
         handleSearch() {
@@ -150,18 +171,29 @@ export default {
             if (length <= 0) {
                 return
             }
-            let str = '';
-            this.delList = this.delList.concat(this.multipleSelection);
-            for (let i = 0; i < length; i++) {
-                str += this.multipleSelection[i].name + ' ';
+            let data = {
+                ids:[],
+            };
+            let ids = [];
+            for (let i=0; i< length; i++) {
+               data.ids.push(this.multipleSelection[i].id)
             }
-            this.$message.error(`Deleted ${str}`);
-            this.multipleSelection = [];
+            delAlgorithmReq(data,this.token).then(res => {
+                if (res.success) {
+                    // this.$message.error(`Deleted `+ length + ' lines');
+                    this.multipleSelection = [];
+                    this.delList = this.delList.concat(this.multipleSelection);
+                }else {
+                    this.$message.error(res.msg || "unkown err");
+                }
+            })
         },
         // 编辑操作
         handleEdit(index, row) {
             this.idx = index;
             this.form = row;
+            this.edit = true;
+            this.dialogTitle = 'Algorithm - '+ row.name;
             this.editVisible = true;
         },
         // 保存编辑

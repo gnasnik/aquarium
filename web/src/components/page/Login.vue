@@ -33,8 +33,8 @@ export default {
     data: function() {
         return {
             param: {
-                username: '1',
-                password: '12334434',
+                username: 'admin',
+                password: 'admin',
                 login_type:"phone"
             },
             rules: {
@@ -47,29 +47,22 @@ export default {
         submitForm() {
             this.$refs.login.validate(valid => {
                 if (valid) {
-                    this.param.user_id = parseInt(this.param.username);
                     loginReq(this.param).then(res => {
                         if (res.success) {
                             this.$message.success('Login Success');
                             localStorage.setItem('ms_username', this.param.username);
+                            localStorage.setItem("token", res.data.token);
                             this.$router.push('/');
                         }else{
                             this.$message.error(res.msg?res.msg:"unknown err");
                         }
                     });
-                    // this.$message.success('Login Success');
-                    // localStorage.setItem('ms_username', this.param.username);
-                    // this.$router.push('/');
                 } else {
                     this.$message.error('Please enter username/password');
                     console.log('error submit!!');
                     return false;
                 }
             });
-        },
-
-        login(){
-
         },
     },
 };

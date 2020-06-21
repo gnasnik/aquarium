@@ -25,9 +25,15 @@ export default new Router({
                     meta: { title: 'Exchange' }
                 },
                 {
-                    path: '/User',
+                    path: '/userinfo',
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/User.vue'),
                     meta: { title: 'User' }
+                },
+                {
+                    // 富文本编辑器组件
+                    path: '/editor',
+                    component: () => import(/* webpackChunkName: "editor" */ '../components/page/VueEditor.vue'),
+                    meta: { title: 'Editor' }
                 },
                 {
                     path: '/404',
@@ -44,7 +50,7 @@ export default new Router({
         {
             path: '/login',
             component: () => import(/* webpackChunkName: "login" */ '../components/page/Login.vue'),
-            meta: { title: '登录' }
+            meta: { title: 'Login' }
         },
         {
             path: '*',

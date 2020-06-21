@@ -16,3 +16,12 @@ export const loginReq = query => {
         data:query // json content-type
     })
 }
+
+export const userListReq = (query, token) => {
+    return request({
+        url:"/user/list",
+        method:"get",
+        params:query,
+        headers: {"Authorization":"Bearer "+token},
+    })
+}
