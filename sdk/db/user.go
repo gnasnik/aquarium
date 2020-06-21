@@ -22,10 +22,13 @@ func GetUserByID(sess *xorm.Session, id int64) (*mod.User, error) {
 
 func GetUser(sess *xorm.Session, username string) (*mod.User, error) {
 	user := &mod.User{}
-	_, err := sess.Where("username = ?", username).Get(user)
+	found, err := sess.Where("username = ?", username).Get(user)
 	if err != nil {
 		log.Err("get user by username failed, %v", err)
 		return nil, err
+	}
+	if !found {
+		return nil, nil
 	}
 	return user, nil
 }

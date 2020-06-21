@@ -80,6 +80,7 @@ func PutExchangeHandler(c *gin.Context) {
 		return
 	}
 
+	req.UserID = uid
 	if req.ID > 0 {
 		exchange, err := sdk.GetExchangeByID(ctx, req.ID)
 		if err != nil {

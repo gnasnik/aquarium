@@ -18,7 +18,7 @@ import (
 
 type login struct {
 	LoginType string `form:"login_type" json:"login_type" binding:"required"`
-	UserID    int64  `form:"user_id" json:"user_id" binding:"required"`
+	Username  string `form:"username" json:"username" binding:"required"`
 	Password  string `form:"password" json:"password" binding:"required"`
 }
 
@@ -58,27 +58,27 @@ func JwtAuthenticatorForUser(ctx *gin.Context) (interface{}, error) {
 	if err := ctx.ShouldBind(&loginVals); err != nil {
 		return "", errors.Error[errors.MissingRequestParams]
 	}
-	userID := loginVals.UserID
+	username := loginVals.Username
 	password := loginVals.Password
 
-	log.Debugw("JwtAuthenticatorForUser", "uid", userID, "type", loginVals.LoginType)
+	log.Debugw("JwtAuthenticatorForUser", "username", username, "type", loginVals.LoginType)
 	switch loginVals.LoginType {
 	case GuestLogin:
-		return GuestAuth(userID)
+		return GuestAuth(username)
 	case PhoneLogin:
-		return PhoneAuth(userID, password, false)
+		return PhoneAuth(username, password, false)
 	}
 
 	return nil, errors.Error[errors.UnknownLoginType]
 }
 
-func GuestAuth(userid int64) (interface{}, error) {
+func GuestAuth(username string) (interface{}, error) {
 	// implement me
 	return nil, nil
 }
 
-func PhoneAuth(userid int64, password string, checkAdmin bool) (interface{}, error) {
-	user, err := sdk.GetUserByID(context.Background(), userid)
+func PhoneAuth(username, password string, checkAdmin bool) (interface{}, error) {
+	user, err := sdk.GetUser(context.Background(), username)
 	if err != nil || user == nil {
 		log.Info("get user byid  failed %v", err)
 		return nil, errors.Error[errors.UserNotFound]
@@ -100,7 +100,7 @@ func JwtAuthorizatorForUser(data interface{}, ctx *gin.Context) bool {
 	// 	return true
 	// }
 	// return false
-	return false
+	return true
 }
 
 func JwtUnauthorized(ctx *gin.Context, code int, message string) {

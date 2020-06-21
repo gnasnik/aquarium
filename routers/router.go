@@ -31,7 +31,7 @@ func InitRouter() *gin.Engine {
 	if config.Configs.RunMode == gin.DebugMode {
 		c := cors.DefaultConfig()
 		c.AllowAllOrigins = true
-		c.AllowMethods = []string{"GET", "POST", "OPTION"}
+		c.AllowMethods = []string{"GET", "PUT", "POST", "OPTIONS"}
 		c.AllowHeaders = []string{"*"}
 		c.MaxAge = time.Hour
 		r.Use(cors.New(c))
@@ -70,7 +70,7 @@ func InitRouter() *gin.Engine {
 	})
 
 	usr := apiV1.Group("/user")
-	// only for test
+	// Temp api for testing
 	usr.POST("/new", CreateNewUserHandler)
 
 	usr.POST("/login", AuthUserMiddleware.LoginHandler)
