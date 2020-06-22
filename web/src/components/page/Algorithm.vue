@@ -138,12 +138,7 @@ export default {
             this.getData();
         },
         addAlgorithm() {
-            this.$message.error("implemet me")
-            // this.idx = 0;
-            // this.form = {};
-            // this.edit = false;
-            // this.dialogTitle = 'Add Algorithm'
-            // this.editVisible = true;
+            this.$router.push('/editor');
         },
         // 触发搜索按钮
         handleSearch() {
