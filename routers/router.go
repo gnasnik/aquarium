@@ -1,8 +1,8 @@
 package routers
 
 import (
-	"aquarium/comm"
-	"aquarium/config"
+	"github.com/frankffenn/aquarium/comm"
+	"github.com/frankffenn/aquarium/config"
 	"log"
 	"net/http"
 	"time"

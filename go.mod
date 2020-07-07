@@ -1,4 +1,4 @@
-module aquarium
+module github.com/frankffenn/aquarium
 
 go 1.14
 

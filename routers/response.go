@@ -1,8 +1,8 @@
 package routers
 
 import (
-	"aquarium/comm"
-	"aquarium/errors"
+	"github.com/frankffenn/aquarium/comm"
+	"github.com/frankffenn/aquarium/errors"
 
 	"github.com/gin-gonic/gin"
 )

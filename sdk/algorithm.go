@@ -1,9 +1,9 @@
 package sdk
 
 import (
-	"aquarium/config"
-	"aquarium/sdk/db"
-	"aquarium/sdk/mod"
+	"github.com/frankffenn/aquarium/config"
+	"github.com/frankffenn/aquarium/sdk/db"
+	"github.com/frankffenn/aquarium/sdk/mod"
 	"context"
 )
 

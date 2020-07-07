@@ -1,13 +1,14 @@
 package main
 
 import (
-	"aquarium/config"
-	"aquarium/routers"
-	"aquarium/utils/env"
-	glog "aquarium/utils/log"
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/frankffenn/aquarium/config"
+	"github.com/frankffenn/aquarium/routers"
+	"github.com/frankffenn/aquarium/utils/env"
+	glog "github.com/frankffenn/aquarium/utils/log"
 )
 
 func main() {

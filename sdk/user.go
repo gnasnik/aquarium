@@ -1,10 +1,11 @@
 package sdk
 
 import (
-	"aquarium/config"
-	"aquarium/sdk/db"
-	"aquarium/sdk/mod"
 	"context"
+
+	"github.com/frankffenn/aquarium/config"
+	"github.com/frankffenn/aquarium/sdk/db"
+	"github.com/frankffenn/aquarium/sdk/mod"
 )
 
 func GetUserByID(ctx context.Context, id int64) (*mod.User, error) {

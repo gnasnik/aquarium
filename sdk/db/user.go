@@ -1,8 +1,8 @@
 package db
 
 import (
-	"aquarium/sdk/mod"
-	"aquarium/utils/log"
+	"github.com/frankffenn/aquarium/sdk/mod"
+	"github.com/frankffenn/aquarium/utils/log"
 
 	"github.com/go-xorm/xorm"
 )

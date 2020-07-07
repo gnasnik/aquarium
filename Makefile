@@ -1,7 +1,13 @@
 
 
 
-all: build
+all: build init
+.PHONY: all 
+
+init:
+	go run tools/init_server/main.go
+.PHONY: init
 
 build:
-	go build -o ./bin/aquarium  main.go
+	go build $(GOFLAGS) -o ./bin/aquarium  main.go
+.PHONY: build

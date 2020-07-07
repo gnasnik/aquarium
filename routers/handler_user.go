@@ -1,15 +1,16 @@
 package routers
 
 import (
-	"aquarium/errors"
-	"aquarium/utils/log"
 	"context"
 	"net/http"
 
-	"aquarium/sdk"
-	"aquarium/sdk/mod"
+	"github.com/frankffenn/aquarium/errors"
+	"github.com/frankffenn/aquarium/utils/log"
 
-	"aquarium/comm"
+	"github.com/frankffenn/aquarium/sdk"
+	"github.com/frankffenn/aquarium/sdk/mod"
+
+	"github.com/frankffenn/aquarium/comm"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"

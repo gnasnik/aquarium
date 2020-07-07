@@ -3,8 +3,8 @@ package config
 import (
 	_ "github.com/go-sql-driver/mysql"
 
-	"aquarium/sdk/mod"
-	adb "aquarium/utils/db"
+	"github.com/frankffenn/aquarium/sdk/mod"
+	adb "github.com/frankffenn/aquarium/utils/db"
 
 	"github.com/go-xorm/xorm"
 )

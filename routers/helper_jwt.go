@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"time"
 
-	"aquarium/comm"
-	"aquarium/errors"
-	"aquarium/sdk"
-	"aquarium/utils/log"
+	"github.com/frankffenn/aquarium/comm"
+	"github.com/frankffenn/aquarium/errors"
+	"github.com/frankffenn/aquarium/sdk"
+	"github.com/frankffenn/aquarium/utils/log"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"

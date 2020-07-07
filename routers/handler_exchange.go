@@ -1,11 +1,11 @@
 package routers
 
 import (
-	"aquarium/comm"
-	"aquarium/errors"
-	"aquarium/sdk"
-	"aquarium/sdk/mod"
-	"aquarium/utils/log"
+	"github.com/frankffenn/aquarium/comm"
+	"github.com/frankffenn/aquarium/errors"
+	"github.com/frankffenn/aquarium/sdk"
+	"github.com/frankffenn/aquarium/sdk/mod"
+	"github.com/frankffenn/aquarium/utils/log"
 	"context"
 	"net/http"
 
