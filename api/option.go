@@ -2,6 +2,12 @@ package api
 
 const (
 	DefaultLimit = 10
+	DefaultHost  = "api.huobi.pro"
+)
+
+// CallOptions
+const (
+	DefaultSize = 20
 )
 
 // Options is an exchange option
@@ -22,6 +28,7 @@ type Option func(opt *Options)
 func newOption(opts ...Option) Options {
 	opt := Options{
 		Limit: DefaultLimit,
+		Host:  DefaultHost,
 	}
 
 	for _, o := range opts {
@@ -47,4 +54,23 @@ func SourceOption(source string) Option {
 	return func(opts *Options) {
 		opts.Source = source
 	}
+}
+
+type CallOptions struct {
+	Size int
+}
+
+type CallOption func(opts *CallOptions)
+
+func Size(size int) CallOption {
+	return func(opts *CallOptions) {
+		opts.Size = size
+	}
+}
+
+func newCallOption() CallOptions {
+	opts := CallOptions{
+		Size: DefaultSize,
+	}
+	return opts
 }

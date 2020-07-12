@@ -5,15 +5,15 @@ import (
 
 	"github.com/frankffenn/aquarium/utils/log"
 	"github.com/google/uuid"
-	conf "github.com/huobirdcenter/huobi_golang/config"
 	cli "github.com/huobirdcenter/huobi_golang/pkg/client"
-	modpr "github.com/huobirdcenter/huobi_golang/pkg/postrequest"
-	modacc "github.com/huobirdcenter/huobi_golang/pkg/response/account"
-	modord "github.com/huobirdcenter/huobi_golang/pkg/response/order"
+	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
+	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
+	"golang.org/x/xerrors"
 )
 
 type Huobi struct {
-	opts         Options
+	options      Options
+	symbolMap    map[string]string
 	minAmountMap map[string]float64
 
 	common  *cli.CommonClient
@@ -26,37 +26,41 @@ type Huobi struct {
 	lastTimes int64
 }
 
-func NewHuobi(opt ...Option) *Huobi {
-	opts := newOption()
-	if opts.Host == "" {
-		opts.Host = conf.Host
+func NewHuobi(opts ...Option) *Huobi {
+	options := newOption()
+
+	for _, o := range opts {
+		o(&options)
 	}
 
 	return &Huobi{
-		opts: opts,
-		minAmountMap: map[string]float64{
-			"BTC/CNY": 0.001,
+		options: options,
+		symbolMap: map[string]string{
+			"btcusdt": "1",
 		},
-		common:    new(cli.CommonClient).Init(opts.Host),
-		market:    new(cli.MarketClient).Init(opts.Host),
-		account:   new(cli.AccountClient).Init(opts.AccessKey, opts.SecretKey, opts.Host),
-		order:     new(cli.OrderClient).Init(opts.AccessKey, opts.SecretKey, opts.Host),
-		wallet:    new(cli.WalletClient).Init(opts.AccessKey, opts.SecretKey, opts.Host),
+		minAmountMap: map[string]float64{
+			"btcusdt": 0.001,
+		},
+		common:    new(cli.CommonClient).Init(options.Host),
+		market:    new(cli.MarketClient).Init(options.Host),
+		account:   new(cli.AccountClient).Init(options.AccessKey, options.SecretKey, options.Host),
+		order:     new(cli.OrderClient).Init(options.AccessKey, options.SecretKey, options.Host),
+		wallet:    new(cli.WalletClient).Init(options.AccessKey, options.SecretKey, options.Host),
 		lastSleep: time.Now().UnixNano(),
 	}
 }
 
 func (h *Huobi) GetType() string {
-	return h.opts.Type
+	return h.options.Type
 }
 
 func (h *Huobi) GetName() string {
-	return h.opts.Name
+	return h.options.Name
 }
 
 func (h *Huobi) AutoSleep() {
 	now := time.Now().UnixNano()
-	limit := h.opts.Limit
+	limit := h.options.Limit
 
 	interval := int64(1e+9/limit*h.lastTimes - (now - h.lastSleep))
 	if interval > 0 {
@@ -71,28 +75,26 @@ func (h *Huobi) GetMinAmount(stock string) float64 {
 	return h.minAmountMap[stock]
 }
 
-// GetAccountInfo
-// spot：现货账户， margin：逐仓杠杆账户，
-// otc：OTC 账户，point：点卡账户，super-margin：全仓杠杆账户,
-// investment: C2C杠杆借出账户, borrow: C2C杠杆借入账户
-func (h *Huobi) GetAccountInfo() []modacc.AccountInfo {
+func (h *Huobi) GetAccountInfo() (interface{}, error) {
 	rsp, err := h.account.GetAccountInfo()
 	if err != nil {
 		log.Err("get account info failed, %v", err)
+		return nil, err
 	}
-	return rsp
+	return rsp, nil
 }
 
-func (h *Huobi) GetAccountBalance(id string) *modacc.AccountBalance {
+func (h *Huobi) GetAccountBalance(id string) (interface{}, error) {
 	rsp, err := h.account.GetAccountBalance(id)
 	if err != nil {
 		log.Err("get account balance faield, %v", err)
+		return nil, err
 	}
-	return rsp
+	return rsp, nil
 }
 
-func (h *Huobi) PlaceOrder(accountID, symbol, orderType, amount, price string) *modord.PlaceOrderResponse {
-	req := &modpr.PlaceOrderRequest{
+func (h *Huobi) PlaceOrder(accountID, symbol, orderType, amount, price string) (interface{}, error) {
+	req := &postrequest.PlaceOrderRequest{
 		AccountId:     accountID,
 		Symbol:        symbol,
 		Type:          orderType,
@@ -106,8 +108,100 @@ func (h *Huobi) PlaceOrder(accountID, symbol, orderType, amount, price string) *
 	rsp, err := h.order.PlaceOrder(req)
 	if err != nil {
 		log.Err("place order failed,%v", err)
+		return nil, err
 	}
-	return rsp
+
+	return rsp, nil
+}
+
+func (h *Huobi) GetOrder(orderId string) (interface{}, error) {
+	rsp, err := h.order.GetOrderById(orderId)
+	if err != nil {
+		log.Err("get order failed, %v", orderId)
+		return nil, err
+	}
+	return rsp.Data, nil
+}
+
+func (h *Huobi) GetOrders(symbol string) (interface{}, error) {
+	if _, ok := h.symbolMap[symbol]; !ok {
+		log.Err("GetOrders() error, unrecognized symbol: ", symbol)
+		return nil, xerrors.New("unrecognized symbol")
+	}
+	req := new(getrequest.GetRequest).Init()
+	req.AddParam("symbol", symbol)
+	req.AddParam("states", "submitted,partial-filled")
+	rsp, err := h.order.GetHistoryOrders(req)
+	if err != nil {
+		return nil, err
+	}
+
+	return rsp.Data, nil
+}
+
+func (h *Huobi) GetTrades(symbol string) (interface{}, error) {
+	if _, ok := h.symbolMap[symbol]; !ok {
+		log.Err("GetTrades() error, unrecognized symbol: ", symbol)
+		return nil, xerrors.New("unrecognized symbol")
+	}
+	req := new(getrequest.GetRequest).Init()
+	req.AddParam("symbol", symbol)
+	req.AddParam("states", "filled")
+	rsp, err := h.order.GetHistoryOrders(req)
+	if err != nil {
+		return nil, err
+	}
+
+	return rsp.Data, nil
+}
+
+func (h *Huobi) CancelOrder(orderId string) error {
+	rsp, err := h.order.CancelOrderById(orderId)
+	if err != nil {
+		log.Err("cancel order failed,%v", rsp.ErrorMessage)
+		return err
+	}
+	return nil
+}
+
+func (h *Huobi) GetDepth(symbol, step string, opts ...CallOption) (interface{}, error) {
+	callOpts := newCallOption()
+
+	for _, o := range opts {
+		o(&callOpts)
+	}
+
+	reqOpt := getrequest.GetDepthOptionalRequest{
+		Size: callOpts.Size,
+	}
+
+	rsp, err := h.market.GetDepth(symbol, step, reqOpt)
+	if err != nil {
+		log.Err("cancel order failed %v", err)
+		return nil, err
+	}
+
+	return rsp, nil
+}
+
+func (h *Huobi) GetCandlestick(symbol, period string, opts ...CallOption) (interface{}, error) {
+	callOpts := newCallOption()
+
+	for _, o := range opts {
+		o(&callOpts)
+	}
+
+	reqOpt := getrequest.GetCandlestickOptionalRequest{
+		Size:   callOpts.Size,
+		Period: period,
+	}
+
+	rsp, err := h.market.GetCandlestick(symbol, reqOpt)
+	if err != nil {
+		return nil, err
+	}
+
+	return rsp, nil
 }
 
 var _ Exchange = &Huobi{}

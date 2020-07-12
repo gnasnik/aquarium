@@ -1,26 +1,20 @@
 package api
 
-import (
-	modacc "github.com/huobirdcenter/huobi_golang/pkg/response/account"
-	modord "github.com/huobirdcenter/huobi_golang/pkg/response/order"
-)
-
 // Exchange interface
 type Exchange interface {
 	// Log(...interface{})
 	GetType() string
 	GetName() string
-	// SetLimit(times interface{}) float64
 	AutoSleep()
 	GetMinAmount(stock string) float64
-	GetAccountBalance(id string) *modacc.AccountBalance
-	PlaceOrder(accountID, symbol, orderType, amount, price string) *modord.PlaceOrderResponse
-	GetOrder(stockType, id string) interface{}
-	GetOrders(stockType string) interface{}
-	GetTrades(stockType string) interface{}
-	// CancelOrder(order Order) bool
-	GetTicker(stockType string, sizes ...interface{}) interface{}
-	GetRecords(stockType, period string, sizes ...interface{}) interface{}
+	GetAccountBalance(id string) (interface{}, error)
+	PlaceOrder(accountID, symbol, orderType, amount, price string) (interface{}, error)
+	GetOrder(orderId string) (interface{}, error)
+	GetOrders(stockType string) (interface{}, error)
+	GetTrades(stockType string) (interface{}, error)
+	CancelOrder(orderId string) error
+	GetDepth(symbol, step string, opts ...CallOption) (interface{}, error)
+	GetCandlestick(symbol, period string, opts ...CallOption) (interface{}, error)
 }
 
 var (
