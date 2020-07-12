@@ -113,7 +113,6 @@ export default {
             exchangeTypes:[],
             tableData: [],
             multipleSelection: [],
-            delList: [],
             editVisible: false,
             edit:false,
             pageTotal: 0,
@@ -184,31 +183,24 @@ export default {
             if (length <= 0) {
                 return
             }
+
             let data = {
                 ids:[],
             };
-            let ids = [];
+
             for (let i=0; i< length; i++) {
                data.ids.push(this.multipleSelection[i].id)
             }
+
             delExchangeReq(data,this.token).then(res => {
                 if (res.success) {
-                    // this.$message.error(`Deleted `+ length + ' lines');
                     this.multipleSelection = [];
-                    this.delList = this.delList.concat(this.multipleSelection);
                 }else {
                     this.$message.error(res.msg || "unkown err");
                 }
             })
 
-            // this.getData();
-            // let str = '';
-            //this.delList = this.delList.concat(this.multipleSelection);
-            // for (let i = 0; i < length; i++) {
-            //     str += this.multipleSelection[i].name + ' ';
-            // }
-            // this.$message.error(`Deleted ${str}`);
-            // this.multipleSelection = [];
+            this.getData();
         },
         // 编辑操作
         handleEdit(index, row) {

@@ -1,11 +1,6 @@
 <template>
     <div>
         <div class="crumbs">
-            <!-- <el-breadcrumb separator="/">
-                <el-breadcrumb-item>
-                    <i class="el-icon-lx-cascades"></i> 基础表格
-                </el-breadcrumb-item>
-            </el-breadcrumb> -->
         </div>
         <div class="container">
             
@@ -28,12 +23,6 @@
                     class="handle-del mr10"
                     @click="delAllSelection"
                 >Remove</el-button>
-                <!-- <el-select v-model="query.address" placeholder="地址" class="handle-select mr10">
-                    <el-option key="1" label="广东省" value="广东省"></el-option>
-                    <el-option key="2" label="湖南省" value="湖南省"></el-option>
-                </el-select>
-                <el-input v-model="query.name" placeholder="用户名" class="handle-input mr10"></el-input>
-                <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button> -->
             </div>
             <el-table
                 :data="tableData"
@@ -47,10 +36,9 @@
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
                 <el-table-column prop="name" label="Name"></el-table-column>
-                <el-table-column prop="desc" label="Desc"></el-table-column>
-                <el-table-column prop="created" label="CreatedAt"></el-table-column>
-                <el-table-column prop="updated" label="UpdatedAt"></el-table-column>
-                <el-table-column prop="action" label="Action"></el-table-column>
+                <el-table-column prop="description" label="Desc"></el-table-column>
+                <el-table-column prop="createdAt" label="CreatedAt"></el-table-column>
+                <el-table-column prop="updatedAt" label="UpdatedAt"></el-table-column>
                 <el-table-column label="Opreation" width="180" align="center">
                     <template slot-scope="scope">
                         <el-button
@@ -98,20 +86,17 @@
 </template>
 
 <script>
-import { algorithmListReq, addAlgorithmReq, delAlgorithmReq } from '../../api/algorithm';
+import { algorithmListReq, delAlgorithmReq } from '../../api/algorithm';
 export default {
     name: 'basetable',
     data() {
         return {
             query: {
-                // address: '',
-                // name: '',
                 page: 1,
                 size: 10
             },
             tableData: [],
             multipleSelection: [],
-            delList: [],
             editVisible: false,
             pageTotal: 0,
             form: {},
@@ -127,7 +112,7 @@ export default {
         getData() {
             algorithmListReq(this.query,this.token).then(res => {
                 if (res.success) {
-                    this.tableData = res.data.exchanges;
+                    this.tableData = res.data.algorithms;
                     this.pageTotal = res.data.total || 50;
                 }else{
                     this.$message.error(res.msg || "unkown err");
@@ -166,21 +151,23 @@ export default {
             if (length <= 0) {
                 return
             }
+           
             let data = {
                 ids:[],
             };
-            let ids = [];
+
             for (let i=0; i< length; i++) {
                data.ids.push(this.multipleSelection[i].id)
             }
+            
             delAlgorithmReq(data,this.token).then(res => {
                 if (res.success) {
-                    // this.$message.error(`Deleted `+ length + ' lines');
                     this.multipleSelection = [];
-                    this.delList = this.delList.concat(this.multipleSelection);
                 }else {
                     this.$message.error(res.msg || "unkown err");
                 }
+                
+                this.getData();
             })
         },
         // 编辑操作

@@ -2,11 +2,11 @@
     <div>
         <div class="container">
             <div class="editor-header">
-            <el-input class="editor-input" v-model="title" placeholder="New Algorithm Name"  maxlength="10"></el-input>
+            <el-input class="editor-input" v-model="form.name" placeholder="New Algorithm Name" maxlength="10"></el-input>
             <el-button class="editor-btn" type="primary" @click="submit">Submit</el-button>
-            <el-button class="editor-btn" type="normal" @click="submit">Cancel</el-button>
+            <el-button class="editor-btn" type="normal" @click="cancel">Cancel</el-button>
             </div>
-            <el-input class="editor-textarea" type="textarea" autosize placeholder="Algorithm Description" v-model="textarea"></el-input>
+            <el-input class="editor-textarea" type="textarea" autosize placeholder="Algorithm Description" v-model="form.description"></el-input>
             <MonacoEditor
                 height="300"
                 width="100%"
@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import { addAlgorithmReq } from '../../api/algorithm';
     import MonacoEditor from '../../vue-monaco-editor/src/Monaco';
     export default {
         name: 'editor',
@@ -31,8 +32,9 @@
             return {
                 title:'New Algorithm Name',
                 content: '',
-                textarea:'',
-                code: '// type your code \n',
+                form:{},
+                token:'',
+                code: '// type your code \n function main() {\n // console.log("hello aquarium"); \n }',
                 editor:null,
                 options: {
                     theme: "vs",
@@ -51,20 +53,31 @@
         components: {
             MonacoEditor
         },
+        created(){
+            this.token = localStorage.getItem("token");
+        },
         methods: {
             onMounted(editor) {
-            console.log('after mount!', editor, editor.getValue(), editor.getModel());
+            // console.log('after mount!', editor, editor.getValue(), editor.getModel());
             this.editor = editor;
             },
             onCodeChange(editor) {
-            console.log('code changed!', 'code:' + this.editor.getValue());
+                console.log('code changed!', 'code:' + this.editor.getValue());
+                this.form.script = this.editor.getValue();
+            },
+            submit(){
+                addAlgorithmReq(this.form, this.token).then(res => {
+                if (res.success) {
+                    this.$message.success(`Success`);
+                }else{
+                    this.$message.error(res.msg || "unkown err");
+                }  
+                })
+            },
+            cancel(){
+
             },
         },
-        // created(){
-        //     this.options = {
-        //         selectOnLineNumbers: false
-        //     };
-        // }
     }
 </script>
 <style scoped>
