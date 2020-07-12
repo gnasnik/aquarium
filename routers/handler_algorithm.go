@@ -1,13 +1,14 @@
 package routers
 
 import (
+	"context"
+	"net/http"
+
 	"github.com/frankffenn/aquarium/comm"
 	"github.com/frankffenn/aquarium/errors"
 	"github.com/frankffenn/aquarium/sdk"
 	"github.com/frankffenn/aquarium/sdk/mod"
 	"github.com/frankffenn/aquarium/utils/log"
-	"context"
-	"net/http"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
@@ -62,6 +63,7 @@ func PutAlgorithmHandler(c *gin.Context) {
 		return
 	}
 
+	req.UserID = uid
 	if req.ID > 0 {
 		algorithm, err := sdk.GetAlgorithmByID(ctx, req.ID)
 		if err != nil {
