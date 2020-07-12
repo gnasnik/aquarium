@@ -114,10 +114,10 @@ func (h *Huobi) PlaceOrder(accountID, symbol, orderType, amount, price string) (
 	return rsp, nil
 }
 
-func (h *Huobi) GetOrder(orderId string) (interface{}, error) {
-	rsp, err := h.order.GetOrderById(orderId)
+func (h *Huobi) GetOrder(orderID string) (interface{}, error) {
+	rsp, err := h.order.GetOrderById(orderID)
 	if err != nil {
-		log.Err("get order failed, %v", orderId)
+		log.Err("get order failed, %v", orderID)
 		return nil, err
 	}
 	return rsp.Data, nil
@@ -155,8 +155,8 @@ func (h *Huobi) GetTrades(symbol string) (interface{}, error) {
 	return rsp.Data, nil
 }
 
-func (h *Huobi) CancelOrder(orderId string) error {
-	rsp, err := h.order.CancelOrderById(orderId)
+func (h *Huobi) CancelOrder(orderID string) error {
+	rsp, err := h.order.CancelOrderById(orderID)
 	if err != nil {
 		log.Err("cancel order failed,%v", rsp.ErrorMessage)
 		return err
