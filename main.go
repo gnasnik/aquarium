@@ -2,17 +2,19 @@ package main
 
 import (
 	"fmt"
-	"log"
+
 	"net/http"
 
 	"github.com/frankffenn/aquarium/config"
 	"github.com/frankffenn/aquarium/routers"
 	"github.com/frankffenn/aquarium/utils/env"
+	"github.com/frankffenn/aquarium/utils/log"
 	glog "github.com/frankffenn/aquarium/utils/log"
 )
 
 func main() {
-	if err := config.InitConfig(); err != nil {
+	configJSON := "config.json"
+	if err := config.InitConfig(configJSON); err != nil {
 		log.Fatal("init config failed, %v", err)
 	}
 

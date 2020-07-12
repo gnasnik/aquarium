@@ -11,7 +11,7 @@ func GetUserByID(sess *xorm.Session, id int64) (*mod.User, error) {
 	user := &mod.User{}
 	found, err := sess.ID(id).Get(user)
 	if err != nil {
-		log.Err("get user by id failed, %v", err)
+		log.Err("get user by id failed %v", err)
 		return nil, err
 	}
 	if !found {
@@ -53,7 +53,7 @@ func ListUser(sess *xorm.Session, id, level, size, page int64, order string) (in
 func CreateUser(sess *xorm.Session, user *mod.User) error {
 	_, err := sess.InsertOne(user)
 	if err != nil {
-		log.Errw("create user failed", err)
+		log.Err("create user failed, %v", err)
 		return err
 	}
 	return nil

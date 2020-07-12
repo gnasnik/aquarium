@@ -38,21 +38,51 @@ func newOption(opts ...Option) Options {
 	return opt
 }
 
-func LimitOption(times int64) Option {
+func Limit(times int64) Option {
 	return func(opts *Options) {
 		opts.Limit = times
 	}
 }
 
-func HostOption(host string) Option {
+func Host(host string) Option {
 	return func(opts *Options) {
 		opts.Host = host
 	}
 }
 
-func SourceOption(source string) Option {
+func Name(name string) Option {
+	return func(opts *Options) {
+		opts.Name = name
+	}
+}
+
+func Type(t string) Option {
+	return func(opts *Options) {
+		opts.Type = t
+	}
+}
+
+func TraderID(id int64) Option {
+	return func(opts *Options) {
+		opts.TraderID = id
+	}
+}
+
+func Source(source string) Option {
 	return func(opts *Options) {
 		opts.Source = source
+	}
+}
+
+func AccessKey(key string) Option {
+	return func(opts *Options) {
+		opts.AccessKey = key
+	}
+}
+
+func SecretKey(key string) Option {
+	return func(opts *Options) {
+		opts.SecretKey = key
 	}
 }
 

@@ -112,3 +112,27 @@ func ListUserHandler(c *gin.Context) {
 		"users": out,
 	}))
 }
+
+func createSuperUser() error {
+	found, err := sdk.GetUser(context.Background(), "admin")
+	if err != nil {
+		log.Err("get user failed, %v", err)
+		return nil
+	}
+
+	if found != nil {
+		return nil
+	}
+
+	passHash, err := bcrypt.GenerateFromPassword([]byte("123456"), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	user := &mod.User{
+		Username: "admin",
+		Password: string(passHash),
+	}
+
+	sdk.CreateUser(context.Background(), user)
+	return nil
+}

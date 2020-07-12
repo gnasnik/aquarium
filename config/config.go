@@ -23,12 +23,11 @@ func Exist(filename string) bool {
 	return err == nil || os.IsExist(err)
 }
 
-func InitConfig() error {
-	configJson := "config.json"
-	if !Exist(configJson) {
+func InitConfig(file string) error {
+	if !Exist(file) {
 		return errors.New("no config file")
 	}
-	in, err := ioutil.ReadFile(configJson)
+	in, err := ioutil.ReadFile(file)
 	if err != nil {
 		return err
 	}

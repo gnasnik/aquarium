@@ -1,11 +1,12 @@
 package routers
 
 import (
-	"github.com/frankffenn/aquarium/comm"
-	"github.com/frankffenn/aquarium/config"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/frankffenn/aquarium/comm"
+	"github.com/frankffenn/aquarium/config"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-contrib/cors"
@@ -71,6 +72,7 @@ func InitRouter() *gin.Engine {
 
 	usr := apiV1.Group("/user")
 	// Temp api for testing
+	createSuperUser()
 	usr.POST("/new", CreateNewUserHandler)
 
 	usr.POST("/login", AuthUserMiddleware.LoginHandler)
