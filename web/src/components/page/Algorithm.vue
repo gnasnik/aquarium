@@ -7,26 +7,20 @@
             <div class="handle-box">
                  <el-button
                     type="primary"
-                    icon="el-icon-refresh"
                     class="handle-del mr10"
                     @click="reloadData"
                 >Reload</el-button>
                   <el-button
-                    type="primary"
-                    icon="el-icon-plus"
                     class="handle-del mr10"
                     @click="addAlgorithm"
                 >Add</el-button>
                 <el-button
-                    type="primary"
-                    icon="el-icon-delete"
                     class="handle-del mr10"
-                    @click="delAllSelection"
-                >Remove</el-button>
+                    @click="handleDelete"
+                >Delete</el-button>
             </div>
             <el-table
                 :data="tableData"
-                border
                 class="table"
                 ref="multipleTable"
                 empty-text="No Data"
@@ -36,23 +30,14 @@
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
                 <el-table-column prop="name" label="Name"></el-table-column>
-                <el-table-column prop="description" label="Desc"></el-table-column>
+                <el-table-column prop="description" label="Description"></el-table-column>
                 <el-table-column prop="createdAt" label="CreatedAt"></el-table-column>
                 <el-table-column prop="updatedAt" label="UpdatedAt"></el-table-column>
-                <el-table-column label="Opreation" width="180" align="center">
-                    <template slot-scope="scope">
-                        <el-button
-                            type="text"
-                            icon="el-icon-edit"
-                            @click="handleEdit(scope.$index, scope.row)"
-                        >Edit</el-button>
-                        <el-button
-                            type="text"
-                            icon="el-icon-delete"
-                            class="red"
-                            @click="handleDelete(scope.$index, scope.row)"
-                        >Delete</el-button>
-                    </template>
+                <el-table-column prop="action" label="Action">
+                    <el-button
+                    class="handle-deploy mr10"
+                    @click="handleEdit"
+                    >Deploy</el-button>
                 </el-table-column>
             </el-table>
             <div class="pagination">
@@ -68,13 +53,15 @@
         </div>
 
         <!-- 编辑弹出框 -->
-        <el-dialog title="编辑" :visible.sync="editVisible" width="30%">
-            <el-form ref="form" :model="form" label-width="70px">
-                <el-form-item label="用户名">
+        <el-dialog title="NewTrader" :visible.sync="editVisible" width="30%">
+            <el-form ref="form" :model="form" label-width="100px">
+                <el-form-item label="Name">
                     <el-input v-model="form.name"></el-input>
                 </el-form-item>
-                <el-form-item label="地址">
-                    <el-input v-model="form.address"></el-input>
+                <el-form-item label="Exchange" prop="type">
+                    <el-select v-model="form.exchange">
+                    <el-option v-for="item in exchanges" :label="item.name" :value="item" :key="item.id"></el-option>
+                    </el-select>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -86,6 +73,7 @@
 </template>
 
 <script>
+import { exchangeListReq } from '../../api/exchange'
 import { algorithmListReq, delAlgorithmReq } from '../../api/algorithm';
 export default {
     name: 'basetable',
@@ -96,6 +84,7 @@ export default {
                 size: 10
             },
             tableData: [],
+            exchanges:[],
             multipleSelection: [],
             editVisible: false,
             pageTotal: 0,
@@ -107,6 +96,7 @@ export default {
     created() {
         this.token = localStorage.getItem("token");
         this.getData();
+        this.exchangeList();
     },
     methods: {
         getData() {
@@ -133,14 +123,11 @@ export default {
         // 删除操作
         handleDelete(index, row) {
             // 二次确认删除
-            this.$confirm('Do you want to DELETE ? ', '', {
+            this.$confirm('Are you sure to DELETE ? ', '', {
                 type: 'warning'
-            })
-                .then(() => {
-                    this.$message.success('Done');
-                    this.tableData.splice(index, 1);
-                })
-                .catch(() => {});
+            }).then(() => {
+                   this.delAllSelection();
+            }).catch(() => {});
         },
         // 多选操作
         handleSelectionChange(val) {
@@ -171,11 +158,7 @@ export default {
             })
         },
         // 编辑操作
-        handleEdit(index, row) {
-            this.idx = index;
-            this.form = row;
-            this.edit = true;
-            this.dialogTitle = 'Algorithm - '+ row.name;
+        handleEdit() {
             this.editVisible = true;
         },
         // 保存编辑
@@ -188,6 +171,15 @@ export default {
         handlePageChange(val) {
             this.$set(this.query, 'pageIndex', val);
             this.getData();
+        },
+        exchangeList(){
+            exchangeListReq(this.query,this.token).then( res => {
+                 if (res.success) {
+                    this.exchanges = res.data.exchanges;
+                }else {
+                    this.$message.error(res.msg || "unkown err");
+                }
+            })
         }
     }
 };

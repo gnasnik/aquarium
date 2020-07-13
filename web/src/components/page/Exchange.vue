@@ -6,37 +6,26 @@
             <div class="handle-box">
                 <el-button
                     type="primary"
-                    icon="el-icon-refresh-right"
                     class="handle-del mr10"
                     @click="reloadData"
                 >Reload</el-button>
                 <el-button
-                    type="primary"
-                    icon="el-icon-plus"
                     class="handle-del mr10"
                     @click="addExchange"
                 >Add</el-button>
                 <el-button
-                    type="primary"
-                    icon="el-icon-delete"
                     class="handle-del mr10"
-                    @click="delAllSelection"
-                >Remove</el-button>
-                <!-- <el-select v-model="query.address" placeholder="地址" class="handle-select mr10">
-                    <el-option key="1" label="广东省" value="广东省"></el-option>
-                    <el-option key="2" label="湖南省" value="湖南省"></el-option>
-                </el-select>
-                <el-input v-model="query.name" placeholder="用户名" class="handle-input mr10"></el-input>
-                <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button> -->
+                    @click="handleDelete"
+                >Delete</el-button>
             </div>
             <el-table
                 :data="tableData"
-                border
                 class="table"
                 ref="multipleTable"
                 empty-text="No Data"
                 header-cell-class-name="table-header"
                 @selection-change="handleSelectionChange"
+                @row-click="handleEdit"
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
@@ -45,21 +34,6 @@
                 <el-table-column prop="createdAt" label="CreatedAt"></el-table-column>
                 <el-table-column prop="updatedAt" label="UpdatedAt"></el-table-column>
 
-                <el-table-column label="Opreation" width="180" align="center">
-                    <template slot-scope="scope">
-                        <el-button
-                            type="text"
-                            icon="el-icon-edit"
-                            @click="handleEdit(scope.$index, scope.row)"
-                        >Edit</el-button>
-                        <el-button
-                            type="text"
-                            icon="el-icon-delete"
-                            class="red"
-                            @click="handleDelete(scope.$index, scope.row)"
-                        >Delete</el-button>
-                    </template>
-                </el-table-column>
             </el-table>
             <div class="pagination">
                 <el-pagination
@@ -92,8 +66,8 @@
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="editVisible = false">取 消</el-button>
-                <el-button type="primary" @click="saveEdit">确 定</el-button>
+                <el-button @click="editVisible = false">Cancel</el-button>
+                <el-button type="primary" @click="saveEdit">OK</el-button>
             </span>
         </el-dialog>
     </div>
@@ -142,7 +116,6 @@ export default {
             this.getData();
         },
         addExchange() {
-            // this.idx = 0;
             this.form = {};
             this.edit = false;
             this.dialogTitle = 'Add Exchange'
@@ -165,14 +138,11 @@ export default {
         // 删除操作
         handleDelete(index, row) {
             // 二次确认删除
-            this.$confirm('Do you want to DELETE ? ', '', {
+            this.$confirm('Are you sure to DELETE ? ', '', {
                 type: 'warning'
-            })
-                .then(() => {
-                    this.$message.success('Done');
-                    this.tableData.splice(index, 1);
-                })
-                .catch(() => {});
+            }).then(() => {
+                   this.delAllSelection();
+            }).catch(() => {});
         },
         // 多选操作
         handleSelectionChange(val) {
@@ -203,8 +173,7 @@ export default {
             this.getData();
         },
         // 编辑操作
-        handleEdit(index, row) {
-            this.idx = index;
+        handleEdit(row,column,event) {
             this.form = row;
             this.edit = true;
             this.dialogTitle = 'Exchange - '+ row.name;
