@@ -105,6 +105,10 @@ export default {
                     this.tableData = res.data.algorithms;
                     this.pageTotal = res.data.total || 50;
                 }else{
+                    if (res.code == 401) {
+                        localStorage.removeItem('ms_username');
+                        this.$router.push("/login")
+                    }
                     this.$message.error(res.msg || "unkown err");
                 }  
             });

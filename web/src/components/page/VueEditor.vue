@@ -74,6 +74,9 @@ import { addAlgorithmReq } from '../../api/algorithm';
                 }  
                 })
             },
+            getTraderListReq(){
+                
+            },
             cancel(){
 
             },
