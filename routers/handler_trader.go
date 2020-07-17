@@ -1,13 +1,14 @@
 package routers
 
 import (
+	"context"
+	"net/http"
+
 	"github.com/frankffenn/aquarium/comm"
 	"github.com/frankffenn/aquarium/errors"
 	"github.com/frankffenn/aquarium/sdk"
 	"github.com/frankffenn/aquarium/sdk/mod"
 	"github.com/frankffenn/aquarium/utils/log"
-	"context"
-	"net/http"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
@@ -51,6 +52,7 @@ func PutTraderHandler(c *gin.Context) {
 		return
 	}
 
+	req.UserID = uid
 	if req.ID > 0 {
 		if err := sdk.UpdateTrader(ctx, &req); err != nil {
 			c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.UpdateTraderFailed))
@@ -94,7 +96,7 @@ func DeleteTraderHandler(c *gin.Context) {
 	trader, err := sdk.GetTraderByID(ctx, p.ID)
 	if err != nil || trader == nil {
 		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.TraderNotFound))
-		return 
+		return
 	}
 
 	if err := sdk.DeleteTrader(ctx, []int64{p.ID}); err != nil {

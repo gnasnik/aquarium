@@ -78,7 +78,7 @@ func AddTraderExchange(sess *xorm.Session, t *mod.TraderExchange) error {
 }
 
 func GetExchangeFromTraderID(sess *xorm.Session, traderID int64) (*mod.Exchange, error) {
-	sql := `SELECT e.* FROM exchanges e, trader_exchanges r WHERE r.trader_id
+	sql := `SELECT e.* FROM exchange e, trader_exchange r WHERE r.trader_id
 	= ? AND e.id = r.exchange_id`
 
 	var out *mod.Exchange

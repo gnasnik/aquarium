@@ -13,5 +13,5 @@ type Algorithm struct {
 	UpdatedAt   time.Time  `xorm:"updated" json:"updatedAt"`
 	DeletedAt   *time.Time `xorm:"deleted" json:"-"`
 
-	Traders []Trader `xorm:"-" json:"traders"`
+	Traders []*Trader `xorm:"-" json:"traders"`
 }

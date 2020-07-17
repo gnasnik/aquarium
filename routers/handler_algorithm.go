@@ -32,15 +32,23 @@ func ListAlgorithmHandler(c *gin.Context) {
 	}
 
 	ctx := context.Background()
-	total, Algorithms, err := sdk.ListAlgorithm(ctx, uid, size, page, order)
+	total, algorithms, err := sdk.ListAlgorithm(ctx, uid, size, page, order)
 	if err != nil {
 		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.ListAlgorithmFailed))
 		return
 	}
 
+	for i, x := range algorithms {
+		traders, err := sdk.ListTrader(ctx, uid, x.ID)
+		if err != nil {
+			c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.ListTraderFailed))
+		}
+		algorithms[i].Traders = traders
+	}
+
 	c.JSON(http.StatusOK, ResponseSuccess(comm.JsonObj{
 		"total":      total,
-		"algorithms": Algorithms,
+		"algorithms": algorithms,
 	}))
 
 }
