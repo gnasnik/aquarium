@@ -6,7 +6,6 @@
             <div class="handle-box">
                 <el-button
                     type="primary"
-                    icon="el-icon-refresh-right"
                     class="handle-del mr10"
                 >Reload</el-button>
                 <el-button
@@ -50,10 +49,10 @@
         <!-- 编辑弹出框 -->
         <el-dialog title="User-" :visible.sync="editVisible" width="30%">
             <el-form ref="form" :model="form" label-width="100px" label-position="left">
-                <el-form-item label="Username">
+                <el-form-item label="Username:">
                     <el-input v-model="form.Username"></el-input>
                 </el-form-item>
-                <el-form-item label="Level">
+                <el-form-item label="Level:">
                     <el-input v-model="form.Level"></el-input>
                 </el-form-item>
                  <!-- <el-form-item label="Password">

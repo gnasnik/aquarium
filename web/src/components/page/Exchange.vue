@@ -50,18 +50,18 @@
         <!-- 编辑弹出框 -->
         <el-dialog :title="dialogTitle" :visible.sync="editVisible" width="30%">
             <el-form ref="form" :model="form" label-width="100px" label-position="left">
-                <el-form-item label="Name">
+                <el-form-item label="Name:">
                     <el-input v-model="form.name"></el-input>
                 </el-form-item>
-                <el-form-item label="Type" prop="type" >
+                <el-form-item label="Type:" prop="type" >
                     <el-select v-model="form.type" placeholder="Select Exchange Type" :disabled="edit">
                     <el-option v-for="item in exchangeTypes" :label="item" :value="item" :key="item"></el-option>
                     </el-select>
                 </el-form-item>
-                 <el-form-item label="AccessKey">
+                 <el-form-item label="AccessKey:">
                     <el-input v-model="form.accessKey"></el-input>
                 </el-form-item>
-                 <el-form-item label="SecretKey">
+                 <el-form-item label="SecretKey:">
                     <el-input v-model="form.secretKey"></el-input>
                 </el-form-item>
             </el-form>
@@ -110,7 +110,7 @@ export default {
                 }else{
                     if (res.code == 401) {   
                         localStorage.removeItem('ms_username');
-                    this.$router.push("/login")
+                        this.$router.push("/login")
                     }
                     this.$message.error(res.msg || "unkown err");
                 }  

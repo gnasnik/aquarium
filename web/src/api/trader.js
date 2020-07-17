@@ -8,3 +8,12 @@ export const traderListReq = (query, token) => {
         headers: {"Authorization":"Bearer "+token},
     })
 }
+
+export const addTraderReq = (data,token) => {
+    return request({
+        url:"/trader/put",
+        method:"post",
+        data:data,
+        headers: {"Authorization":"Bearer "+token},
+    })
+}
