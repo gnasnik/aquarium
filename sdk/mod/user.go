@@ -27,14 +27,16 @@ func (u *User) ToPlain() *PlainUser {
 		Level:     u.Level,
 		IsBanned:  u.IsBanned,
 		CreatedAt: u.CreatedAt,
+		UpdatedAt: u.UpdatedAt,
 	}
 }
 
 type PlainUser struct {
-	ID        int64     `xorm:"'id' pk autoincr"`
-	Username  string    `xorm:"'username' varchar(25) unique "`
-	Guid      string    `json:"'guid'"`
-	Level     int64     `xorm:"'level'"`
-	IsBanned  bool      `xorm:"'is_banned'`
-	CreatedAt time.Time `xorm:"created"`
+	ID        int64
+	Username  string
+	Guid      string
+	Level     int64
+	IsBanned  bool
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
