@@ -15,7 +15,7 @@ type Trader struct {
 	DeletedAt   *time.Time `xorm:"deleted" sql:"index" json:"-"`
 
 	Exchanges []*Exchange `xorm:"-" json:"exchanges"`
-	Status    int64       `xorm:"-" json:"status"`
+	Status    int64       `xorm:"status" json:"status"`
 	Algorithm *Algorithm  `xorm:"-" json:"algorithm"`
 }
 

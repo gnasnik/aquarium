@@ -1,10 +1,11 @@
 package sdk
 
 import (
+	"context"
+
 	"github.com/frankffenn/aquarium/config"
 	"github.com/frankffenn/aquarium/sdk/db"
 	"github.com/frankffenn/aquarium/sdk/mod"
-	"context"
 )
 
 func ListTrader(ctx context.Context, userID, algorithmID int64) ([]*mod.Trader, error) {

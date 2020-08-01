@@ -36,6 +36,7 @@ func run(id int64) error {
 	if err != nil {
 		return err
 	}
+
 	go func() {
 		trader.LastRunAt = time.Now()
 		trader.Status = 1

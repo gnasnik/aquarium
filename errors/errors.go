@@ -55,6 +55,7 @@ const (
 	TraderNotFound
 	InvalidTraderID
 	DeleteTraderFailed
+	SwitchTraderFailed
 )
 
 var Error = map[ErrorCode]error{
@@ -91,6 +92,7 @@ var Error = map[ErrorCode]error{
 	TraderNotFound:     errors.New("trader not found"),
 	InvalidTraderID:    errors.New("trader id must not emtpty"),
 	DeleteTraderFailed: errors.New("delete trader failed"),
+	SwitchTraderFailed: errors.New("switch trader failed"),
 }
 
 func GetMsg(e ErrorCode) string {

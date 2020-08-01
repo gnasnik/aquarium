@@ -98,6 +98,7 @@ func InitRouter() *gin.Engine {
 	trad.GET("/list", ListTraderHandler)
 	trad.POST("/put", PutTraderHandler)
 	trad.POST("/del", DeleteTraderHandler)
+	trad.POST("/switch", SwitchTraderHandler)
 
 	return r
 }
