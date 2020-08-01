@@ -17,3 +17,11 @@ export const addTraderReq = (data,token) => {
         headers: {"Authorization":"Bearer "+token},
     })
 }
+
+export const swithTrader = (data, token) =>  {
+    return request({
+        url:"/trader/switch",
+        data:data,
+        headers: {"Authorization":"Bearer "+token},
+    })
+}

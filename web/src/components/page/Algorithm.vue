@@ -3,7 +3,6 @@
         <div class="crumbs">
         </div>
         <div class="container">
-            
             <div class="handle-box">
                  <el-button
                     type="primary"
@@ -33,18 +32,27 @@
                 <el-table-column type="expand">
                 <template slot-scope="props">
                     <el-form label-position="left" inline class="demo-table-expand">
+                        <div class="breathe-btn">1231231231231</div>
                     <el-table
                         :data="props.row.traders"
                         class="table"
                         ref="multipleTable"
+                        style="width: 100%"
                         empty-text="No Data">
+                        <el-table-column v-if="false" prop="id" label="ID"></el-table-column>
                         <el-table-column prop="name" label="Name"></el-table-column>
-                        <el-table-column prop="status" label="Status" :formatter="statusFormat"></el-table-column>
+                         <!-- <el-table-column prop="status" label="Status" :formatter="statusFormat"> -->
+                        <el-table-column label="Status">
+                           <template slot-scope="scope">
+                            <i  v-if="scope.row.status != 0" class="el-icon-loading"></i>
+                            {{ statusFormat(scope.row.status) }}
+                          </template>
+                         </el-table-column>
                         <el-table-column prop="createdAt" label="CreatedAt" :formatter="dateFormat"></el-table-column>
                         <el-table-column prop="updatedAt" label="UpdatedAt" :formatter="dateFormat"></el-table-column>
                         <el-table-column label="Action">
                         <template slot-scope="scope">
-                            <el-button class="handle-del mr10"  size="mini" @click="handleClickRun(scope.$index, scope.row)">Run</el-button>
+                            <el-button class="handle-del mr10"  ref="button11" size="mini" @click="handleClickRun(scope.$index, scope.row)">{{runOrStop(scope.row)}}</el-button>
                             <el-button class="handle-del mr10"  size="mini" type="danger" @click="handleClickDelete(scope.$index, scope.row)">Delete</el-button>
                         </template>
                         </el-table-column>
@@ -101,9 +109,10 @@
 
 <script>
 import { exchangeListReq } from '../../api/exchange';
-import { addTraderReq, traderListReq } from '../../api/trader';
+import { addTraderReq, traderListReq, swithTrader } from '../../api/trader';
 import { algorithmListReq, delAlgorithmReq } from '../../api/algorithm';
 import { formatPlainDate , formatDateTime } from "../../utils/date";
+
 export default {
     name: 'basetable',
     data() {
@@ -120,7 +129,7 @@ export default {
             pageTotal: 0,
             form: {},
             idx: -1,
-            id: -1
+            id: -1,
         };
     },
     created() {
@@ -142,6 +151,12 @@ export default {
             }
             return "Run"
         },
+        runOrStop(row) {
+            if (!row.status || row.status == 0){
+                return "Run"
+            }
+            return "Stop"
+        },
         getData() {
             algorithmListReq(this.query,this.token).then(res => {
                 if (res.success) {
@@ -149,12 +164,6 @@ export default {
                         return 
                     }
                     for(var i = 0; i < res.data.algorithms.length; i++) {
-                        let traders = res.data.algorithms[i].traders;
-                        if (traders) {
-                            for (var j = 0; j <  traders.length; j++) {
-                                res.data.algorithms[i].traders[j].id = ""; 
-                            }   
-                        }
                         res.data.algorithms[i].children = res.data.algorithms[i].traders;
                     }
                     this.tableData = res.data.algorithms;
@@ -231,8 +240,18 @@ export default {
             this.form.algorithmName = row.name;
             this.editVisible = true;
         },
-        handleClickRun(row) {
-            this.$message.error("not implement yet")
+        handleClickRun(index,row) {
+            row.status = !row.status
+            let data = {
+                id: row.id
+            }
+            swithTrader(data,this.token).then(res => {
+                if (res.success) {
+                    
+                }else {
+                    this.$message.error(res.msg || "unkown err");
+                }
+            })
         },
         // 保存编辑
         saveEdit() {
@@ -312,5 +331,14 @@ export default {
     margin-right: 0;
     margin-bottom: 0;
     width: 50%;
+  }
+
+  .unlight .light{
+    width: 10px;
+    height: 10px;
+    background: red;
+    color: red;
+    /* border-radius:5px; */
+    background-color:red;
   }
 </style>
