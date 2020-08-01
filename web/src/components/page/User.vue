@@ -7,14 +7,16 @@
                 <el-button
                     type="primary"
                     class="handle-del mr10"
+                    size="mini"
                 >Reload</el-button>
                 <el-button
                     class="handle-del mr10"
-                    
+                    size="mini"
                 >Add</el-button>
                 <el-button
                     class="handle-del mr10"
                     @click="handleDelete"
+                    size="mini"
                 >Delete</el-button>
             </div>
             <el-table
@@ -30,8 +32,8 @@
                 <el-table-column prop="ID" label="ID" width="55" align="center"></el-table-column>
                 <el-table-column prop="Username" label="Username"></el-table-column>
                 <el-table-column prop="Level" label="Level"></el-table-column>
-                <el-table-column prop="CreatedAt" label="CreatedAt"></el-table-column>
-                <el-table-column prop="UpdatedAt" label="UpdatedAt"></el-table-column>
+                <el-table-column prop="CreatedAt" label="CreatedAt" :formatter="dateFormat"></el-table-column>
+                <el-table-column prop="UpdatedAt" label="UpdatedAt" :formatter="dateFormat"></el-table-column>
 
             </el-table>
             <div class="pagination">
@@ -71,6 +73,7 @@
 </template>
 
 <script>
+import { formatDateTime } from "../../utils/date";
 import { userListReq } from '../../api/index';
 export default {
     name: 'basetable',
@@ -94,6 +97,13 @@ export default {
         this.getUserList();
     },
     methods: {
+         dateFormat(row, column, cellValue, index){
+            if (!cellValue) {
+                return ''
+            }
+            var date = new Date(cellValue);
+            return formatDateTime(date);
+        },       
         getUserList() {
             var token = localStorage.getItem("token");
             userListReq(this.query,token).then(res => {
@@ -175,7 +185,7 @@ export default {
 }
 .table {
     width: 100%;
-    font-size: 14px;
+    font-size: 12px;
 }
 .red {
     color: #ff0000;

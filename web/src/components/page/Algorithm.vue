@@ -9,14 +9,17 @@
                     type="primary"
                     class="handle-del mr10"
                     @click="reloadData"
+                    size="mini"
                 >Reload</el-button>
                   <el-button
                     class="handle-del mr10"
                     @click="addAlgorithm"
+                    size="mini"
                 >Add</el-button>
                 <el-button
                     class="handle-del mr10"
                     @click="handleDelete"
+                    size="mini"
                 >Delete</el-button>
             </div>
             <el-table
@@ -26,20 +29,38 @@
                 empty-text="No Data"
                 header-cell-class-name="table-header"
                 @selection-change="handleSelectionChange"
-                row-key="name"
-                :row-class-name="tableRowClassName"
-                :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
             >
+                <el-table-column type="expand">
+                <template slot-scope="props">
+                    <el-form label-position="left" inline class="demo-table-expand">
+                    <el-table
+                        :data="props.row.traders"
+                        class="table"
+                        ref="multipleTable"
+                        empty-text="No Data">
+                        <el-table-column prop="name" label="Name"></el-table-column>
+                        <el-table-column prop="status" label="Status" :formatter="statusFormat"></el-table-column>
+                        <el-table-column prop="createdAt" label="CreatedAt" :formatter="dateFormat"></el-table-column>
+                        <el-table-column prop="updatedAt" label="UpdatedAt" :formatter="dateFormat"></el-table-column>
+                        <el-table-column label="Action">
+                        <template slot-scope="scope">
+                            <el-button class="handle-del mr10"  size="mini" @click="handleClickRun(scope.$index, scope.row)">Run</el-button>
+                            <el-button class="handle-del mr10"  size="mini" type="danger" @click="handleClickDelete(scope.$index, scope.row)">Delete</el-button>
+                        </template>
+                        </el-table-column>
+                    </el-table>
+                    </el-form>
+                </template>
+                </el-table-column>
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
+                <el-table-column v-if="false" prop="id" label="ID" width="100" align="center"></el-table-column>
                 <el-table-column prop="name" label="Name"></el-table-column>
                 <el-table-column prop="description" label="Description"></el-table-column>
-                <el-table-column prop="createdAt" label="CreatedAt"></el-table-column>
-                <el-table-column prop="updatedAt" label="UpdatedAt"></el-table-column>
+                <el-table-column prop="createdAt" label="CreatedAt" :formatter="dateFormat"></el-table-column>
+                <el-table-column prop="updatedAt" label="UpdatedAt" :formatter="dateFormat"></el-table-column>
                 <el-table-column prop="id" fixed="right" label="Action">
                     <template slot-scope="scope">
-                        <el-button class="handle-deploy mr10" @click="handleClick(scope.row)" v-if="isTree(scope.row)">Run</el-button>
-                        <el-button class="handle-deploy mr10" @click="handleClick(scope.row)" v-else >Deploy</el-button>
+                        <el-button class="handle-deploy mr10" size="mini" @click="handleClickDeploy(scope.$index, scope.row)">Deploy</el-button>
                     </template>
                 </el-table-column>
             </el-table> 
@@ -58,9 +79,9 @@
         <!-- 编辑弹出框 -->
         <el-dialog title="NewTrader" :visible.sync="editVisible" width="30%">
             <el-form ref="form" :model="form" label-width="100px" label-position="left">
-                <el-form-item label="Algorithm:">
+                <!-- <el-form-item label="Algorithm:">
                     <el-input v-model="form.algorithmName" disabled></el-input>
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item label="Name:">
                     <el-input v-model="form.name"></el-input>
                 </el-form-item>
@@ -82,6 +103,7 @@
 import { exchangeListReq } from '../../api/exchange';
 import { addTraderReq, traderListReq } from '../../api/trader';
 import { algorithmListReq, delAlgorithmReq } from '../../api/algorithm';
+import { formatPlainDate , formatDateTime } from "../../utils/date";
 export default {
     name: 'basetable',
     data() {
@@ -103,20 +125,29 @@ export default {
     },
     created() {
         this.token = localStorage.getItem("token");
-        this.getData();
         this.exchangeList();
+        this.getData();
     },
     methods: {
-        isTree(row){
-            if (row.traders) {
-                return false
+        dateFormat(row, column, cellValue, index){
+            if (!cellValue) {
+                return ''
             }
-            return true
+            var date = new Date(cellValue);
+            return formatDateTime(date);
+        },
+        statusFormat(row, column, cellValue, index){
+            if (status == 0) {
+                return "Halt"
+            }
+            return "Run"
         },
         getData() {
             algorithmListReq(this.query,this.token).then(res => {
                 if (res.success) {
-                    // let length = res.data.algorithms.length;
+                    if (!res.data.algorithms) {
+                        return 
+                    }
                     for(var i = 0; i < res.data.algorithms.length; i++) {
                         let traders = res.data.algorithms[i].traders;
                         if (traders) {
@@ -192,15 +223,16 @@ export default {
             })
         },
         // 编辑操作
-        handleClick(row) {
-            // algorithm
-            if (row.traders) {
-                this.form.algorithmId = row.id;
-                this.form.algorithmName = row.name;
-                this.editVisible = true;
-            }
+        handleClickDeploy(index,row) {
             // tree-trader
-            this.$message.error(`not implement yet`);
+            var date = formatPlainDate(new Date());
+            this.form.algorithmId = row.id;
+            this.form.name = "New Trader @ " + date;
+            this.form.algorithmName = row.name;
+            this.editVisible = true;
+        },
+        handleClickRun(row) {
+            this.$message.error("not implement yet")
         },
         // 保存编辑
         saveEdit() {
@@ -210,6 +242,7 @@ export default {
             }
             this.addTrader();
             this.editVisible = false;
+            // this.reloadData()
         },
         // 分页导航
         handlePageChange(val) {
@@ -226,7 +259,6 @@ export default {
             })
         },
         addTrader(){
-            this.form.name = "trader@" + this.form.name;
             addTraderReq(this.form, this.token).then(res => {
                 if (res.success) {
                     this.$message.success(`Success`);
@@ -254,7 +286,7 @@ export default {
 }
 .table {
     width: 100%;
-    font-size: 14px;
+    font-size: 12px;
 }
 .red {
     color: #ff0000;
@@ -269,7 +301,16 @@ export default {
     height: 40px;
 }
 
-.el-table .success-row {
-background: #f0f9eb;
-}
+  .demo-table-expand {
+    font-size: 0;
+  }
+  .demo-table-expand label {
+    width: 90px;
+    color: #99a9bf;
+  }
+  .demo-table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 50%;
+  }
 </style>

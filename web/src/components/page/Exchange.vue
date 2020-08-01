@@ -8,14 +8,17 @@
                     type="primary"
                     class="handle-del mr10"
                     @click="reloadData"
+                    size="mini"
                 >Reload</el-button>
                 <el-button
                     class="handle-del mr10"
                     @click="addExchange"
+                    size="mini"
                 >Add</el-button>
                 <el-button
                     class="handle-del mr10"
                     @click="handleDelete"
+                    size="mini"
                 >Delete</el-button>
             </div>
             <el-table
@@ -28,11 +31,11 @@
                 @row-click="handleEdit"
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
+                <el-table-column prop="id" label="ID" width="100" align="center"></el-table-column>
                 <el-table-column prop="name" label="Name"></el-table-column>
                 <el-table-column prop="type" label="Type"></el-table-column>
-                <el-table-column prop="createdAt" label="CreatedAt"></el-table-column>
-                <el-table-column prop="updatedAt" label="UpdatedAt"></el-table-column>
+                <el-table-column prop="createdAt" label="CreatedAt" :formatter="dateFormat"></el-table-column>
+                <el-table-column prop="updatedAt" label="UpdatedAt" :formatter="dateFormat"></el-table-column>
 
             </el-table>
             <div class="pagination">
@@ -74,6 +77,7 @@
 </template>
 
 <script>
+import { formatDateTime } from "../../utils/date";
 import { exchangeListReq, addExchangeReq, exchangeTypesReq, delExchangeReq } from '../../api/exchange';
 export default {
     name: 'basetable',
@@ -102,6 +106,13 @@ export default {
         this.getExchangeTypes();
     },
     methods: {
+        dateFormat(row, column, cellValue, index){
+            if (!cellValue) {
+                return ''
+            }
+            var date = new Date(cellValue);
+            return formatDateTime(date);
+        },
         getData() {
             exchangeListReq(this.query,this.token).then(res => {
                 if (res.success) {
@@ -220,7 +231,7 @@ export default {
 }
 .table {
     width: 100%;
-    font-size: 14px;
+    font-size: 12px;
 }
 .red {
     color: #ff0000;
