@@ -150,8 +150,8 @@ export default {
             var date = new Date(cellValue);
             return formatDateTime(date);
         },
-        statusFormat(row, column, cellValue, index){
-            if (status == 0) {
+        statusFormat(status){
+            if (!status || status == 0) {
                 return "Halt"
             }
             return "Run"
