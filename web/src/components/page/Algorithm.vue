@@ -28,11 +28,11 @@
                 empty-text="No Data"
                 header-cell-class-name="table-header"
                 @selection-change="handleSelectionChange"
+                @expand-change="expandChange"
             >
                 <el-table-column type="expand">
                 <template slot-scope="props">
                     <el-form label-position="left" inline class="demo-table-expand">
-                        <div class="breathe-btn">1231231231231</div>
                     <el-table
                         :data="props.row.traders"
                         class="table"
@@ -109,7 +109,7 @@
 
 <script>
 import { exchangeListReq } from '../../api/exchange';
-import { addTraderReq, traderListReq, swithTrader } from '../../api/trader';
+import { addTraderReq, traderListReq, delTraderReq, swithTrader } from '../../api/trader';
 import { algorithmListReq, delAlgorithmReq } from '../../api/algorithm';
 import { formatPlainDate , formatDateTime } from "../../utils/date";
 
@@ -233,19 +233,36 @@ export default {
         },
         // 编辑操作
         handleClickDeploy(index,row) {
-            // tree-trader
             var date = formatPlainDate(new Date());
             this.form.algorithmId = row.id;
             this.form.name = "New Trader @ " + date;
             this.form.algorithmName = row.name;
             this.editVisible = true;
         },
+        handleClickDelete(index,row){
+            delTraderReq({id:row.id},this.token).then(res => {
+                if (res.success) {
+                    traderListReq({algorithmId: row.algorithmId}, this.token).then(res => {
+                        if (res.success) {
+                            // 遍历当前页面表
+                            this.tableData.forEach((temp, index) => {
+                                // 找到当前点击的行，把动态获取到的数据赋值进去
+                                if (temp.id === row.algorithmId) {
+                                    this.tableData[index].traders = res.data.traders;
+                                }
+                            });
+                        }else {
+                            this.$message.error(res.msg || "unkown err");
+                        }
+                    })
+                }else {
+                    this.$message.error(res.msg || "unkown err");
+                }
+            });
+        },
         handleClickRun(index,row) {
             row.status = !row.status
-            let data = {
-                id: row.id
-            }
-            swithTrader(data,this.token).then(res => {
+            swithTrader({id: row.id},this.token).then(res => {
                 if (res.success) {
                     
                 }else {
@@ -259,9 +276,27 @@ export default {
                 this.$message.error(`Please select a exchange`);
                 return
             }
-            this.addTrader();
+            addTraderReq(this.form, this.token).then(res => {
+                if (res.success) {
+                    // 动态加载展开页
+                    traderListReq({algorithmId: this.form.algorithmId}, this.token).then(res => {
+                        if (res.success) {
+                            // 遍历当前页面表
+                            this.tableData.forEach((temp, index) => {
+                            // 找到当前点击的行，把动态获取到的数据赋值进去
+                            if (temp.id === this.form.algorithmId) {
+                                this.tableData[index].traders = res.data.traders;
+                            }
+                            });
+                        }else {
+                            this.$message.error(res.msg || "unkown err");
+                        }
+                    })
+                }else {
+                    this.$message.error(res.msg || "unkown err");
+                }
+            })
             this.editVisible = false;
-            // this.reloadData()
         },
         // 分页导航
         handlePageChange(val) {
@@ -277,15 +312,25 @@ export default {
                 }
             })
         },
-        addTrader(){
-            addTraderReq(this.form, this.token).then(res => {
+        expandChange(row, expandedRows){
+            // 该处是用于判断是展开还是收起行，只有展开的时候做请求，避免多次请求！
+            // 展开的时候expandedRows有值，收起的时候为空.
+             if (expandedRows.length > 0) {
+                traderListReq({algorithmId: row.id}, this.token).then(res => {
                 if (res.success) {
-                    this.$message.success(`Success`);
+                    // 遍历当前页面表
+                    this.tableData.forEach((temp, index) => {
+                        // 找到当前点击的行，把动态获取到的数据赋值进去
+                        if (temp.id === row.id) {
+                            this.tableData[index].traders = res.data.traders;
+                        }
+                    });
                 }else {
                     this.$message.error(res.msg || "unkown err");
                 }
-            })
-        }
+                })
+             }
+        },
     }
 };
 </script>

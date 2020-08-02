@@ -18,6 +18,15 @@ export const addTraderReq = (data,token) => {
     })
 }
 
+export const delTraderReq = (data,token) => {
+    return request({
+        url:"/trader/del",
+        method:"post",
+        data:data,
+        headers: {"Authorization":"Bearer "+token},
+    })
+}
+
 export const swithTrader = (data, token) =>  {
     return request({
         url:"/trader/switch",
