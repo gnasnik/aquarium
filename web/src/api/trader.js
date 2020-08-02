@@ -31,6 +31,7 @@ export const swithTrader = (data, token) =>  {
     return request({
         url:"/trader/switch",
         data:data,
+        method:"post",
         headers: {"Authorization":"Bearer "+token},
     })
 }

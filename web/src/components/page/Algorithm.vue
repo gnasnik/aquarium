@@ -94,8 +94,12 @@
                     <el-input v-model="form.name"></el-input>
                 </el-form-item>
                 <el-form-item label="Exchange:" prop="type">
-                    <el-select v-model="form.exchange" placeholder="Select Exchange">
-                    <el-option v-for="item in exchanges" :label="item.name" :value="item" :key="item.id"></el-option>
+                    <el-select v-model="form.exchanges" value-key="id" multiple placeholder="Select Exchange">
+                    <el-option v-for="item in exchanges" 
+                    :label="item.name" 
+                    :value="item" 
+                    :key="item.id">
+                    </el-option>
                     </el-select>
                 </el-form-item>
             </el-form>
@@ -261,21 +265,21 @@ export default {
             });
         },
         handleClickRun(index,row) {
-            row.status = !row.status
             swithTrader({id: row.id},this.token).then(res => {
-                if (res.success) {
-                    
-                }else {
+                if (res.success) {    
+                    row.status = !row.status
+                }else { 
                     this.$message.error(res.msg || "unkown err");
                 }
             })
         },
         // 保存编辑
         saveEdit() {
-            if (!this.form.exchange) {
+            if (!this.form.exchanges) {
                 this.$message.error(`Please select a exchange`);
                 return
             }
+            console.log(this.form);
             addTraderReq(this.form, this.token).then(res => {
                 if (res.success) {
                     // 动态加载展开页
