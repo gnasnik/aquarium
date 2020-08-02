@@ -24,14 +24,21 @@ func ListTraderHandler(c *gin.Context) {
 	algorithmID := com.StrTo(c.Query("algorithmId")).MustInt64()
 	ctx := context.Background()
 
-	Traders, err := sdk.ListTrader(ctx, uid, algorithmID)
+	traders, err := sdk.ListTrader(ctx, uid, algorithmID)
 	if err != nil {
 		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.ListTraderFailed))
 		return
 	}
 
+	for i, trader := range traders {
+		if _, ok := traderx.Executor[trader.ID]; !ok {
+			continue
+		}
+		traders[i].Status = traderx.Executor[trader.ID].Status
+	}
+
 	c.JSON(http.StatusOK, ResponseSuccess(comm.JsonObj{
-		"traders": Traders,
+		"traders": traders,
 	}))
 
 }

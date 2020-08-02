@@ -34,12 +34,17 @@ func GetTraderStatus(id int64) int64 {
 func run(id int64) error {
 	trader, err := initialize(id)
 	if err != nil {
+		log.Err("initialize trader failed, %v", err)
 		return err
 	}
 
 	go func() {
 		trader.LastRunAt = time.Now()
 		trader.Status = 1
+		if trader.Algorithm.Script == "" {
+			log.Errw("empty script", "aligorithm id", trader.Algorithm.ID)
+			return
+		}
 		if _, err := trader.Ctx.Run(trader.Algorithm.Script); err != nil {
 			log.Err("run script failed, %v", err)
 			return
@@ -63,6 +68,7 @@ func stop(id int64) error {
 		return xerrors.New("Can not found the Trader")
 	}
 	Executor[id].Ctx.Interrupt <- func() { panic(errHalt) }
+	Executor[id].Trader.Status = 0
 	return nil
 }
 

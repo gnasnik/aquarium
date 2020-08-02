@@ -78,11 +78,17 @@ func AddTraderExchange(sess *xorm.Session, t *mod.TraderExchange) error {
 }
 
 func GetExchangeFromTraderID(sess *xorm.Session, traderID int64) (*mod.Exchange, error) {
-	sql := `SELECT e.* FROM exchange e, trader_exchange r WHERE r.trader_id
-	= ? AND e.id = r.exchange_id`
+	trex := &mod.TraderExchange{
+		TraderID: traderID,
+	}
+	if found, err := sess.Get(trex); err != nil || !found {
+		return nil, err
+	}
 
-	var out *mod.Exchange
-	found, err := sess.Sql(sql, traderID).Get(out)
+	out := &mod.Exchange{
+		ID: trex.ExchangeID,
+	}
+	found, err := sess.Get(out)
 	if err != nil {
 		log.Err("get exchange by trader id failed, %v", err)
 		return nil, err
