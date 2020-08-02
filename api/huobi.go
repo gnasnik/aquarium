@@ -177,7 +177,7 @@ func (h *Huobi) GetDepth(symbol, step string, opts ...CallOption) (interface{}, 
 
 	rsp, err := h.market.GetDepth(symbol, step, reqOpt)
 	if err != nil {
-		log.Err("cancel order failed %v", err)
+		log.Err("get market depth failed%v", err)
 		return nil, err
 	}
 

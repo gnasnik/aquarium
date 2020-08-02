@@ -39,6 +39,11 @@ func run(id int64) error {
 	}
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Errw("recover", "err", err)
+			}
+		}()
 		trader.LastRunAt = time.Now()
 		trader.Status = 1
 		if trader.Algorithm.Script == "" {
