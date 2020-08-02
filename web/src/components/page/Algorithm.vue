@@ -29,6 +29,7 @@
                 header-cell-class-name="table-header"
                 @selection-change="handleSelectionChange"
                 @expand-change="expandChange"
+                @row-click="handleEdit"
             >
                 <el-table-column type="expand">
                 <template slot-scope="props">
@@ -181,12 +182,6 @@ export default {
                 }  
             });
         },
-        tableRowClassName({row, rowIndex}) {
-            if (row.traders) {
-                return '';
-            }
-            return 'success-row';;
-        },
         reloadData() {
             this.getData();
         },
@@ -302,6 +297,10 @@ export default {
             })
             this.editVisible = false;
         },
+        handleEdit(row,column,event) {
+            // this.$router.push('/editor',row);
+            this.$router.push({path:'/editor', name:'editor', params:row})
+        },
         // 分页导航
         handlePageChange(val) {
             this.$set(this.query, 'pageIndex', val);
@@ -355,9 +354,6 @@ export default {
 .table {
     width: 100%;
     font-size: 12px;
-}
-.red {
-    color: #ff0000;
 }
 .mr10 {
     margin-right: 10px;

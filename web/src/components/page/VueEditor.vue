@@ -2,7 +2,7 @@
     <div>
         <div class="container">
             <div class="editor-header">
-            <el-input class="editor-input" v-model="form.name" placeholder="New Algorithm Name" maxlength="10"></el-input>
+            <el-input class="editor-input" v-model="form.name" placeholder="New Algorithm Name" maxlength="100"></el-input>
             <el-button class="editor-btn" type="primary" @click="submit">Submit</el-button>
             <el-button class="editor-btn" type="normal" @click="cancel">Cancel</el-button>
             </div>
@@ -13,7 +13,7 @@
                 class="vs"
                 style="position: absolute; overflow: hidden; left: 32px; width: 1038px; height: 453px;"
                 language="javascript"
-                :code="code"
+                :code="form.script"
                 :editorOptions="options"
                 @mounted="onMounted"
                 @codeChange="onCodeChange"
@@ -24,7 +24,8 @@
 </template>
 
 <script>
-import { addAlgorithmReq } from '../../api/algorithm';
+    import bus from '../common/bus';
+    import { addAlgorithmReq } from '../../api/algorithm';
     import MonacoEditor from '../../vue-monaco-editor/src/Monaco';
     export default {
         name: 'editor',
@@ -32,9 +33,11 @@ import { addAlgorithmReq } from '../../api/algorithm';
             return {
                 title:'New Algorithm Name',
                 content: '',
-                form:{},
+                form:{
+                    script:'// type your code \n function main() {\n // console.log("hello aquarium"); \n }',
+                },
                 token:'',
-                code: '// type your code \n function main() {\n // console.log("hello aquarium"); \n }',
+                // code: '',
                 editor:null,
                 options: {
                     theme: "vs",
@@ -55,10 +58,14 @@ import { addAlgorithmReq } from '../../api/algorithm';
         },
         created(){
             this.token = localStorage.getItem("token");
+            if (this.$route.params) {
+                this.form = this.$route.params;
+                console.log("form-->",this.form )
+            }
         },
         methods: {
             onMounted(editor) {
-            // console.log('after mount!', editor, editor.getValue(), editor.getModel());
+            console.log('after mount!', editor, editor.getValue(), editor.getModel());
             this.editor = editor;
             },
             onCodeChange(editor) {
@@ -66,19 +73,21 @@ import { addAlgorithmReq } from '../../api/algorithm';
                 this.form.script = this.editor.getValue();
             },
             submit(){
+                if (this.form.script == "") {
+                    this.form.script = this.code;
+                }
+                console.log("------->>", this.form);
                 addAlgorithmReq(this.form, this.token).then(res => {
                 if (res.success) {
                     this.$message.success(`Success`);
+                    bus.$emit('close_current_tags');
                 }else{
                     this.$message.error(res.msg || "unkown err");
                 }  
                 })
             },
-            getTraderListReq(){
-                
-            },
             cancel(){
-
+                bus.$emit('close_current_tags');
             },
         },
     }

@@ -29,7 +29,7 @@
                 @row-click="handleEdit"
                 >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column prop="ID" label="ID" width="55" align="center"></el-table-column>
+                <el-table-column v-if="false" prop="ID" label="ID" width="55" align="center"></el-table-column>
                 <el-table-column prop="Username" label="Username"></el-table-column>
                 <el-table-column prop="Level" label="Level"></el-table-column>
                 <el-table-column prop="CreatedAt" label="CreatedAt" :formatter="dateFormat"></el-table-column>
@@ -103,7 +103,12 @@ export default {
             }
             var date = new Date(cellValue);
             return formatDateTime(date);
-        },       
+        }, 
+        nameStyle(column){
+            if (column.columnIndex === 2) {
+                return 'color:#108EE9';
+            }
+        },             
         getUserList() {
             var token = localStorage.getItem("token");
             userListReq(this.query,token).then(res => {

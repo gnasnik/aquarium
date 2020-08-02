@@ -31,7 +31,7 @@
                 @row-click="handleEdit"
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column prop="id" label="ID" width="100" align="center"></el-table-column>
+                <el-table-column v-if="false" prop="id" label="ID" width="100" align="center"></el-table-column>
                 <el-table-column prop="name" label="Name"></el-table-column>
                 <el-table-column prop="type" label="Type"></el-table-column>
                 <el-table-column prop="createdAt" label="CreatedAt" :formatter="dateFormat"></el-table-column>
