@@ -7,13 +7,18 @@ export default new Router({
     routes: [
         {
             path: '/',
-            redirect: '/algorithm'
+            redirect: '/job'
         },
         {
             path: '/',
             component: () => import(/* webpackChunkName: "home" */ '../components/common/Home.vue'),
             meta: { title: 'FILES' },
             children: [
+                {
+                    path: '/job',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/Job.vue'),
+                    meta: { title: 'Job' }
+                },
                 {
                     path: '/algorithm',
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/Algorithm.vue'),

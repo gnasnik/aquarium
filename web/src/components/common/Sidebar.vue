@@ -68,6 +68,11 @@ export default {
             collapse: false,
             items: [
                 {
+                    icon: 'el-icon-news',
+                    index: 'job',
+                    title: 'Job'
+                },
+                {
                     icon: 'el-icon-fk-compute',
                     index: 'algorithm',
                     title: 'Algorithm'

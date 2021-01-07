@@ -28,51 +28,16 @@
                 empty-text="No Data"
                 header-cell-class-name="table-header"
                 @selection-change="handleSelectionChange"
-                @expand-change="expandChange"
-                @row-click="handleEdit"
             >
-                <el-table-column type="expand">
-                <template slot-scope="props">
-                    <el-form label-position="left" inline class="demo-table-expand">
-                    <el-table
-                        :data="props.row.traders"
-                        class="table"
-                        ref="multipleTable"
-                        style="width: 100%"
-                        empty-text="No Data">
-                        <el-table-column v-if="false" prop="id" label="ID"></el-table-column>
-                        <el-table-column prop="name" label="Name"></el-table-column>
-                         <!-- <el-table-column prop="status" label="Status" :formatter="statusFormat"> -->
-                        <el-table-column label="Status">
-                           <template slot-scope="scope">
-                            <i  v-if="scope.row.status != 0" class="el-icon-loading"></i>
-                            {{ statusFormat(scope.row.status) }}
-                          </template>
-                         </el-table-column>
-                        <el-table-column prop="createdAt" label="CreatedAt" :formatter="dateFormat"></el-table-column>
-                        <el-table-column prop="updatedAt" label="UpdatedAt" :formatter="dateFormat"></el-table-column>
-                        <el-table-column label="Action">
-                        <template slot-scope="scope">
-                            <el-button class="handle-del mr10"  ref="button11" size="mini" @click="handleClickRun(scope.$index, scope.row)">{{runOrStop(scope.row)}}</el-button>
-                            <el-button class="handle-del mr10"  size="mini" type="danger" @click="handleClickDelete(scope.$index, scope.row)">Delete</el-button>
-                        </template>
-                        </el-table-column>
-                    </el-table>
-                    </el-form>
-                </template>
-                </el-table-column>
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column v-if="false" prop="id" label="ID" width="100" align="center"></el-table-column>
                 <el-table-column prop="name" label="Name"></el-table-column>
                 <el-table-column prop="description" label="Description"></el-table-column>
                 <el-table-column prop="createdAt" label="CreatedAt" :formatter="dateFormat"></el-table-column>
                 <el-table-column prop="updatedAt" label="UpdatedAt" :formatter="dateFormat"></el-table-column>
-                <el-table-column prop="id" fixed="right" label="Action">
-                    <template slot-scope="scope">
-                        <el-button class="handle-deploy mr10" size="mini" @click="handleClickDeploy(scope.$index, scope.row)">Deploy</el-button>
-                    </template>
-                </el-table-column>
-            </el-table> 
+
+            </el-table>
+    
             <div class="pagination">
                 <el-pagination
                     background
