@@ -12,7 +12,7 @@
                 >Reload</el-button>
                 <el-button
                     class="handle-del mr10"
-                    @click="addExchange"
+                    @click="addJob"
                     size="mini"
                 >Add</el-button>
                 <el-button
@@ -34,7 +34,7 @@
                 <el-table-column v-if="false" prop="id" label="ID" width="100" align="center"></el-table-column>
                 <el-table-column prop="name" label="Name"></el-table-column>
                 <el-table-column prop="type" label="Type"></el-table-column>
-                 <el-table-column prop="running" label="Running"></el-table-column>
+                <el-table-column prop="running" label="Running"></el-table-column>
                 <el-table-column prop="createdAt" label="CreatedAt" :formatter="dateFormat"></el-table-column>
                 <el-table-column prop="updatedAt" label="UpdatedAt" :formatter="dateFormat"></el-table-column>
 
@@ -58,12 +58,12 @@
                     <el-input v-model="form.name"></el-input>
                 </el-form-item>
                 <el-form-item label="Exchange:" prop="exchange" >
-                    <el-select v-model="form.exchange" placeholder="Select Exchanges" :disabled="edit">
+                    <el-select v-model="form.exchange_id" placeholder="Select Exchanges" :disabled="edit">
                     <el-option v-for="item in exchanges" :label="item.name" :value="item.id" :key="item.id"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="Algorithm:" prop="algorithm" >
-                    <el-select v-model="form.algorithm" placeholder="Select Algorithm" :disabled="edit">
+                    <el-select v-model="form.algorithm_id" placeholder="Select Algorithm" :disabled="edit">
                     <el-option v-for="item in algorithms" :label="item.name" :value="item.id" :key="item.id"></el-option>
                     </el-select>
                 </el-form-item>
@@ -135,10 +135,10 @@ export default {
         reloadData() {
             this.getData();
         },
-        addExchange() {
+        addJob() {
             this.form = {};
             this.edit = false;
-            this.dialogTitle = 'Add Exchange'
+            this.dialogTitle = 'Add Job'
             this.editVisible = true;
         },
         getExchanges(){
@@ -199,7 +199,7 @@ export default {
                data.ids.push(this.multipleSelection[i].id)
             }
 
-            delExchangeReq(data,this.token).then(res => {
+            delJobReq(data,this.token).then(res => {
                 if (res.success) {
                     this.multipleSelection = [];
                 }else {
@@ -211,19 +211,19 @@ export default {
         },
         // 编辑操作
         handleEdit(row,column,event) {
-            console.log(row)
             this.form = row;
             this.edit = true;
-            this.dialogTitle = 'Job - '+ row.name;
+            this.dialogTitle = 'Job - '+ row.algorithm;
             this.editVisible = true;
         },
         // 保存编辑
         saveEdit() {
-            if (!this.form.exchange || !this.form.algorithm) {
+            if (!this.form.exchange_id || !this.form.algorithm_id) {
                 this.$message.error("please select exchange and algorithm!");
                 return 
             } 
             addJobReq(this.form, this.token).then(res => {
+                console.log(this.form)
                 if (res.success) {
                     this.editVisible = false;
                     this.$message.success(`Success`);
