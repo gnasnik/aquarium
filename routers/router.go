@@ -80,6 +80,12 @@ func InitRouter() *gin.Engine {
 	usr.GET("/info", GetUserHandler)
 	usr.GET("/list", ListUserHandler)
 
+	job := apiV1.Group("/job")
+	job.Use(AuthUserMiddleware.MiddlewareFunc())
+	job.GET("/list", ListJobHandler)
+	job.POST("/put", PutJobHandler)
+	job.POST("/del", DeleteJobHandler)
+
 	exch := apiV1.Group("/exchange")
 	exch.GET("/types", TypesExchangeHandler)
 	exch.Use(AuthUserMiddleware.MiddlewareFunc())

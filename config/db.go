@@ -27,6 +27,7 @@ func initDB() error {
 		new(mod.Algorithm),
 		new(mod.Trader),
 		new(mod.TraderExchange),
+		new(mod.Job),
 	)
 	return nil
 }

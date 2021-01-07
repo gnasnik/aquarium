@@ -18,6 +18,16 @@ const (
 	TokenCreateFailed
 )
 
+// exchange error
+const (
+	ListJobFailed ErrorCode = iota + 30001
+	AddJobFailed
+	UpdateJobFailed
+	JobNotFound
+	InvalidJobID
+	DeleteJobFailed
+)
+
 // user error
 const (
 	GeneratePasswordFailed ErrorCode = iota + 20001

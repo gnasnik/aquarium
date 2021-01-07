@@ -1,5 +1,3 @@
 #！/bin/bash
 
-make 
-
-./bin/aquarium 
+make && ./bin/aquarium 
