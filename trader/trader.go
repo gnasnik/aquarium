@@ -18,21 +18,21 @@ var (
 )
 
 func Switch(id int64) error {
-	if GetTraderStatus(id) > 0 {
+	if GetTraderStatus(id) {
 		return stop(id)
 	}
 	return run(id)
 }
 
-func GetTraderStatus(id int64) int64 {
+func GetTraderStatus(id int64) bool {
 	if t, ok := Executor[id]; ok && t != nil {
-		return t.Status
+		return t.Running
 	}
-	return 0
+	return false
 }
 
 func run(id int64) error {
-	trader, err := initialize(id)
+	job, err := initialize(id)
 	if err != nil {
 		log.Err("initialize trader failed, %v", err)
 		return err
@@ -44,17 +44,17 @@ func run(id int64) error {
 				log.Errw("recover", "err", err)
 			}
 		}()
-		trader.LastRunAt = time.Now()
-		trader.Status = 1
-		if trader.Algorithm.Script == "" {
-			log.Errw("empty script", "aligorithm id", trader.Algorithm.ID)
+		job.LastRunAt = time.Now()
+		job.Running = true
+		if job.Algorithm.Script == "" {
+			log.Errw("empty script", "aligorithm id", job.Algorithm.ID)
 			return
 		}
-		if _, err := trader.Ctx.Run(trader.Algorithm.Script); err != nil {
+		if _, err := job.Ctx.Run(job.Algorithm.Script); err != nil {
 			log.Err("run script failed, %v", err)
 			return
 		}
-		main, err := trader.Ctx.Get("main")
+		main, err := job.Ctx.Get("main")
 		if err != nil {
 			log.Err("Can not get the main function")
 			return
@@ -64,7 +64,7 @@ func run(id int64) error {
 			return
 		}
 	}()
-	Executor[trader.ID] = trader
+	Executor[job.ID] = job
 	return nil
 }
 
@@ -73,67 +73,61 @@ func stop(id int64) error {
 		return xerrors.New("Can not found the Trader")
 	}
 	Executor[id].Ctx.Interrupt <- func() { panic(errHalt) }
-	Executor[id].Trader.Status = 0
+	Executor[id].Job.Running = false
 	return nil
 }
 
 func initialize(id int64) (*Global, error) {
-	if t := Executor[id]; t != nil && t.Status > 0 {
+	if t := Executor[id]; t != nil && t.Running {
 		return nil, nil
 	}
 
 	ctx := context.Background()
-	trader, err := sdk.GetTraderByID(ctx, id)
+	job, err := sdk.GetJobByID(ctx, id)
 	if err != nil {
 		log.Err("get trader by id failed,%v", err)
 		return nil, err
 	}
 
-	if trader.AlgorithmID <= 0 {
+	if job.AlgorithmID <= 0 {
 		return nil, xerrors.New("Please select a algorithm")
 	}
 
-	trader.Algorithm, err = sdk.GetAlgorithmByID(ctx, trader.AlgorithmID)
+	job.Algorithm, err = sdk.GetAlgorithmByID(ctx, job.AlgorithmID)
 	if err != nil {
 		log.Err("get algorithm by id failed,%v", err)
 		return nil, err
 	}
 
-	es, err := sdk.GetTraderExchangesByTraderID(trader.ID)
+	e, err := sdk.GetExchangeByID(ctx, job.ExchangeID)
 	if err != nil {
 		log.Err("get traderexchange by id failed,%v", err)
 		return nil, err
 	}
 
+	ex := createExchange(
+		comm.ExchangeType(e.Type),
+		api.JobID(job.ID),
+		api.Name(e.Name),
+		api.Type(e.Type),
+		api.AccessKey(e.AccessKey),
+		api.SecretKey(e.SecretKey),
+	)
+
 	global := &Global{
-		Trader: trader,
-		tasks:  make([]task, 0),
-		Ctx:    otto.New(),
+		Job:   job,
+		tasks: make([]task, 0),
+		Ctx:   otto.New(),
+		ex:    ex,
 	}
 	for _, c := range comm.Consts {
 		global.Ctx.Set(c, c)
 	}
-	for _, e := range es {
-		ex := createExchange(
-			comm.ExchangeType(e.Type),
-			api.TraderID(trader.ID),
-			api.Name(e.Name),
-			api.Type(e.Type),
-			api.AccessKey(e.AccessKey),
-			api.SecretKey(e.SecretKey),
-		)
-		global.es = append(global.es, ex)
-	}
-	if len(global.es) == 0 {
-		return nil, xerrors.New("Please add at least one exchange")
-	}
 	global.Ctx.Interrupt = make(chan func(), 1)
 	global.Ctx.Set("Global", global)
 	global.Ctx.Set("G", global)
-	global.Ctx.Set("Exchange", global.es[0])
-	global.Ctx.Set("E", global.es[0])
-	global.Ctx.Set("Exchanges", global.es)
-	global.Ctx.Set("Es", global.es)
+	global.Ctx.Set("Exchange", global.ex)
+	global.Ctx.Set("E", global.ex)
 	return global, nil
 }
 

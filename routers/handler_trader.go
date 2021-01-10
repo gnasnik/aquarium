@@ -30,12 +30,12 @@ func ListTraderHandler(c *gin.Context) {
 		return
 	}
 
-	for i, trader := range traders {
-		if _, ok := traderx.Executor[trader.ID]; !ok {
-			continue
-		}
-		traders[i].Status = traderx.Executor[trader.ID].Status
-	}
+	// for i, trader := range traders {
+	// 	if _, ok := traderx.Executor[trader.ID]; !ok {
+	// 		continue
+	// 	}
+	// 	traders[i].Status = traderx.Executor[trader.ID].Status
+	// }
 
 	c.JSON(http.StatusOK, ResponseSuccess(comm.JsonObj{
 		"traders": traders,

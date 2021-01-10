@@ -12,7 +12,7 @@ const (
 
 // Options is an exchange option
 type Options struct {
-	TraderID  int64
+	JobID     int64
 	Host      string
 	Type      string
 	Name      string
@@ -62,9 +62,9 @@ func Type(t string) Option {
 	}
 }
 
-func TraderID(id int64) Option {
+func JobID(id int64) Option {
 	return func(opts *Options) {
-		opts.TraderID = id
+		opts.JobID = id
 	}
 }
 

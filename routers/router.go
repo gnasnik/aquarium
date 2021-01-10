@@ -85,6 +85,7 @@ func InitRouter() *gin.Engine {
 	job.GET("/list", ListJobHandler)
 	job.POST("/put", PutJobHandler)
 	job.POST("/del", DeleteJobHandler)
+	job.POST("/switch", SwitchJobHandler)
 
 	exch := apiV1.Group("/exchange")
 	exch.GET("/types", TypesExchangeHandler)

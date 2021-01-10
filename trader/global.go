@@ -7,9 +7,9 @@ import (
 )
 
 type Global struct {
-	*mod.Trader
+	*mod.Job
 	Ctx       *otto.Otto
-	es        []api.Exchange
+	ex        api.Exchange
 	tasks     []task
 	execed    bool
 	statusLog string

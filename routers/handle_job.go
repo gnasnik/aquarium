@@ -3,11 +3,13 @@ package routers
 import (
 	"context"
 	"net/http"
+	"time"
 
 	"github.com/frankffenn/aquarium/comm"
 	"github.com/frankffenn/aquarium/errors"
 	"github.com/frankffenn/aquarium/sdk"
 	"github.com/frankffenn/aquarium/sdk/mod"
+	traderx "github.com/frankffenn/aquarium/trader"
 	"github.com/frankffenn/aquarium/utils/log"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
@@ -44,15 +46,22 @@ func ListJobHandler(c *gin.Context) {
 		ids = append(ids, x.ID)
 	}
 
-	total, Jobs, err := sdk.ListJob(ctx, ids, size, page, order)
+	total, jobs, err := sdk.ListJob(ctx, ids, size, page, order)
 	if err != nil {
 		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.ListJobFailed))
 		return
 	}
 
+	for i, trader := range jobs {
+		if _, ok := traderx.Executor[trader.ID]; !ok {
+			continue
+		}
+		jobs[i].Running = traderx.Executor[trader.ID].Running
+	}
+
 	c.JSON(http.StatusOK, ResponseSuccess(comm.JsonObj{
 		"total": total,
-		"jobs":  Jobs,
+		"jobs":  jobs,
 	}))
 
 }
@@ -125,6 +134,48 @@ func DeleteJobHandler(c *gin.Context) {
 
 	if err := sdk.DeleteJob(ctx, p.IDs); err != nil {
 		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.DeleteJobFailed))
+		return
+	}
+
+	c.JSON(http.StatusOK, ResponseSuccess(comm.JsonObj{}))
+}
+
+func SwitchJobHandler(c *gin.Context) {
+	claims := jwt.ExtractClaims(c)
+	uid := int64(claims["user_id"].(float64))
+
+	ctx := context.Background()
+	_, err := sdk.GetUserByID(ctx, uid)
+	if err != nil {
+		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.UserNotFound))
+		return
+	}
+
+	type post struct {
+		ID int64 `json:"id"`
+	}
+
+	var p post
+	if err := c.ShouldBindJSON(&p); err != nil {
+		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.MissingRequestParams))
+		return
+	}
+
+	job, err := sdk.GetJobByID(ctx, p.ID)
+	if err != nil || job == nil {
+		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.JobNotFound))
+		return
+	}
+
+	if err := traderx.Switch(p.ID); err != nil {
+		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.SwitchTraderFailed))
+		return
+	}
+
+	job.LastRunAt = time.Now()
+	job.Running = !job.Running
+	if err := sdk.UpdateJob(ctx, job); err != nil {
+		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.UpdateJobFailed))
 		return
 	}
 
