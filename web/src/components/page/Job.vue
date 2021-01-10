@@ -33,8 +33,18 @@
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column v-if="false" prop="id" label="ID" width="100" align="center"></el-table-column>
                 <el-table-column prop="name" label="Name"></el-table-column>
-                <el-table-column prop="type" label="Type"></el-table-column>
-                <el-table-column prop="running" label="Running"></el-table-column>
+                <el-table-column prop="description" label="Description"></el-table-column>
+                <el-table-column prop="running" label="Running">
+                     <template slot-scope="scope">
+                        <el-button v-if="scope.row.running"
+                            size="mini"
+                            type="danger"
+                            @click.stop="handleClickRun(scope.$index, scope.row)">Stop</el-button>
+                        <el-button v-else
+                            size="mini"
+                            @click.stop="handleClickRun(scope.$index, scope.row)">Run</el-button>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="createdAt" label="CreatedAt" :formatter="dateFormat"></el-table-column>
                 <el-table-column prop="updatedAt" label="UpdatedAt" :formatter="dateFormat"></el-table-column>
 
@@ -58,12 +68,12 @@
                     <el-input v-model="form.name"></el-input>
                 </el-form-item>
                 <el-form-item label="Exchange:" prop="exchange" >
-                    <el-select v-model="form.exchange_id" placeholder="Select Exchanges" :disabled="edit">
+                    <el-select v-model="form.exchangeId" placeholder="Select Exchanges" :disabled="edit">
                     <el-option v-for="item in exchanges" :label="item.name" :value="item.id" :key="item.id"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="Algorithm:" prop="algorithm" >
-                    <el-select v-model="form.algorithm_id" placeholder="Select Algorithm" :disabled="edit">
+                    <el-select v-model="form.algorithmId" placeholder="Select Algorithm" :disabled="edit">
                     <el-option v-for="item in algorithms" :label="item.name" :value="item.id" :key="item.id"></el-option>
                     </el-select>
                 </el-form-item>
@@ -78,7 +88,7 @@
 
 <script>
 import { formatDateTime } from "../../utils/date";
-import { jobListReq, addJobReq, delJobReq } from '../../api/job';
+import { jobListReq, addJobReq, delJobReq, switchJob } from '../../api/job';
 import { exchangeListReq } from '../../api/exchange';
 import { algorithmListReq } from '../../api/algorithm';
 export default {
@@ -121,6 +131,7 @@ export default {
         getData() {
             jobListReq(this.query,this.token).then(res => {
                 if (res.success) {
+                    console.log(res.data.jobs)
                     this.tableData = res.data.jobs;
                     this.pageTotal = res.data.total || 50;
                 }else{
@@ -166,6 +177,16 @@ export default {
                     this.$message.error(res.msg || "unkown err");
                 }  
             });
+        },
+        // 编辑操作
+        handleClickRun(index,row) {
+            switchJob({id: row.id},this.token).then(res => {
+                if (res.success) {    
+                    row.running = !row.running
+                }else { 
+                    this.$message.error(res.msg || "unkown err");
+                }
+            })
         },
         // 触发搜索按钮
         handleSearch() {
@@ -218,12 +239,11 @@ export default {
         },
         // 保存编辑
         saveEdit() {
-            if (!this.form.exchange_id || !this.form.algorithm_id) {
+            if (!this.form.exchangeId || !this.form.algorithmId) {
                 this.$message.error("please select exchange and algorithm!");
                 return 
             } 
             addJobReq(this.form, this.token).then(res => {
-                console.log(this.form)
                 if (res.success) {
                     this.editVisible = false;
                     this.$message.success(`Success`);

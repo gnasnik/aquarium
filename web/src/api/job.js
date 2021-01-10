@@ -26,3 +26,13 @@ export const delJobReq = (data,token) => {
         headers: {"Authorization":"Bearer "+token},
     })
 }
+
+
+export const switchJob = (data, token) =>  {
+    return request({
+        url:"/job/switch",
+        data:data,
+        method:"post",
+        headers: {"Authorization":"Bearer "+token},
+    })
+}

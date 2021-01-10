@@ -60,23 +60,19 @@
             this.token = localStorage.getItem("token");
             if (this.$route.params) {
                 this.form = this.$route.params;
-                console.log("form-->",this.form )
             }
         },
         methods: {
             onMounted(editor) {
-            console.log('after mount!', editor, editor.getValue(), editor.getModel());
             this.editor = editor;
             },
             onCodeChange(editor) {
-                console.log('code changed!', 'code:' + this.editor.getValue());
                 this.form.script = this.editor.getValue();
             },
             submit(){
                 if (this.form.script == "") {
                     this.form.script = this.code;
                 }
-                console.log("------->>", this.form);
                 addAlgorithmReq(this.form, this.token).then(res => {
                 if (res.success) {
                     this.$message.success(`Success`);
