@@ -8,11 +8,11 @@ import (
 
 type Global struct {
 	*mod.Job
-	Ctx       *otto.Otto
-	ex        api.Exchange
-	tasks     []task
-	execed    bool
-	statusLog string
+	Ctx    *otto.Otto
+	ex     api.Exchange
+	tasks  []task
+	execed bool
+	log    chan *mod.JobLog
 }
 
 type task struct {

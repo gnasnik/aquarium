@@ -69,6 +69,12 @@ const (
 	InvalidJob
 )
 
+// job log error
+const (
+	ListJobLogFailed ErrorCode = iota + 70001
+	AddJobLogFailed
+)
+
 var Error = map[ErrorCode]error{
 	InvalidRequestParams: errors.New("invalid request params"),
 	MissingRequestParams: errors.New("missing request params"),

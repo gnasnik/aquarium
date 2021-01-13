@@ -53,6 +53,12 @@ func run(id int64) error {
 		}
 		if _, err := job.Ctx.Run(job.Algorithm.Script); err != nil {
 			log.Err("run script failed, %v", err)
+			job.log <- &mod.JobLog{
+				Type:    mod.LogTypeError,
+				UserID:  job.UserID,
+				JobID:   job.ID,
+				Content: err.Error(),
+			}
 			return
 		}
 		main, err := job.Ctx.Get("main")
@@ -66,15 +72,30 @@ func run(id int64) error {
 		}
 	}()
 	Executor[job.ID] = job
+	Executor[id].log <- &mod.JobLog{
+		Type:    mod.LogTypeStart,
+		UserID:  job.UserID,
+		JobID:   job.ID,
+		Content: "Server Start",
+	}
 	return nil
 }
 
 func stop(id int64) error {
-	if t, ok := Executor[id]; !ok || t == nil {
+	t, ok := Executor[id]
+	if !ok || t == nil {
 		return xerrors.New("Can not found the Trader")
 	}
 	Executor[id].Ctx.Interrupt <- func() { panic(errHalt) }
 	Executor[id].Job.Status = mod.JSStop
+
+	Executor[id].log <- &mod.JobLog{
+		Type:    mod.LogTypeStop,
+		UserID:  t.UserID,
+		JobID:   t.ID,
+		Content: "Server Stop",
+	}
+
 	return nil
 }
 
@@ -86,7 +107,7 @@ func initialize(id int64) (*Global, error) {
 	ctx := context.Background()
 	job, err := sdk.GetJobByID(ctx, id)
 	if err != nil {
-		log.Err("get trader by id failed,%v", err)
+		log.Err("get job by id failed,%v", err)
 		return nil, err
 	}
 
@@ -102,7 +123,7 @@ func initialize(id int64) (*Global, error) {
 
 	e, err := sdk.GetExchangeByID(ctx, job.ExchangeID)
 	if err != nil {
-		log.Err("get traderexchange by id failed,%v", err)
+		log.Err("get exchange by id failed,%v", err)
 		return nil, err
 	}
 
@@ -120,10 +141,13 @@ func initialize(id int64) (*Global, error) {
 		tasks: make([]task, 0),
 		Ctx:   otto.New(),
 		ex:    ex,
+		log:   make(chan *mod.JobLog),
 	}
 	for _, c := range comm.Consts {
 		global.Ctx.Set(c, c)
 	}
+	go global.RecordLog()
+
 	global.Ctx.Interrupt = make(chan func(), 1)
 	global.Ctx.Set("Global", global)
 	global.Ctx.Set("G", global)
@@ -145,6 +169,18 @@ func clean(userID int64) {
 	for _, t := range Executor {
 		if t != nil && t.UserID == userID {
 			stop(t.ID)
+		}
+	}
+}
+
+func (g *Global) RecordLog() {
+	for {
+		select {
+		case l := <-g.log:
+			sdk.AddJobLog(context.Background(), l)
+			if l.Type == mod.LogTypeStop {
+				return
+			}
 		}
 	}
 }
