@@ -32,22 +32,35 @@
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column v-if="false" prop="id" label="ID" width="100" align="center"></el-table-column>
-                <el-table-column prop="name" label="Name"></el-table-column>
-                <el-table-column prop="description" label="Description"></el-table-column>
-                <el-table-column prop="running" label="Running">
+                <el-table-column prop="name" label="Name">
                      <template slot-scope="scope">
-                        <el-button v-if="scope.row.running"
-                            size="mini"
-                            type="danger"
-                            @click.stop="handleClickRun(scope.$index, scope.row)">Stop</el-button>
-                        <el-button v-else
-                            size="mini"
-                            @click.stop="handleClickRun(scope.$index, scope.row)">Run</el-button>
+                       <div class="name">{{scope.row.name}}</div>
+                       <div class="description">{{scope.row.description|| "no description"}}</div>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="running" label="Status">
+                     <template slot-scope="scope">
+                         <i class="el-icon-video-play" v-if="scope.row.status == 1"></i>
+                         <i class="el-icon-video-pause" v-else></i>
+                        <span>{{tranformStatus(scope.row.status)}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="createdAt" label="CreatedAt" :formatter="dateFormat"></el-table-column>
-                <el-table-column prop="updatedAt" label="UpdatedAt" :formatter="dateFormat"></el-table-column>
-
+                <el-table-column label="">
+                    <template slot-scope="scope">
+                        <div @click.stop>
+                        <el-dropdown trigger="click" size="medium" @command="handleCommand">
+                            <i class="el-icon-more"></i>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item icon="el-icon-switch-button" :command="composeValue('stop', scope.row)" v-if="scope.row.running">Job Stop</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-video-play" :command="composeValue('run', scope.row)" v-else>Job Run</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-refresh" :command="composeValue('restart', scope.row)">Job Restart</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-document" :command="composeValue('viewlog', scope.row)">View Log</el-dropdown-item>
+                            </el-dropdown-menu>
+                            </el-dropdown>
+                        </div>
+                    </template>
+                </el-table-column>
             </el-table>
             <div class="pagination">
                 <el-pagination
@@ -66,6 +79,9 @@
             <el-form ref="form" :model="form" label-width="100px" label-position="left">
                 <el-form-item label="Name:">
                     <el-input v-model="form.name"></el-input>
+                </el-form-item>
+                <el-form-item label="Description:">
+                    <el-input v-model="form.description"></el-input>
                 </el-form-item>
                 <el-form-item label="Exchange:" prop="exchange" >
                     <el-select v-model="form.exchangeId" placeholder="Select Exchanges" :disabled="edit">
@@ -151,6 +167,9 @@ export default {
             this.edit = false;
             this.dialogTitle = 'Add Job'
             this.editVisible = true;
+
+            this.getExchanges();
+            this.getAlgorithms();
         },
         getExchanges(){
             exchangeListReq(this.query,this.token).then(res => {
@@ -178,11 +197,10 @@ export default {
                 }  
             });
         },
-        // 编辑操作
-        handleClickRun(index,row) {
+        handleSwitch(row) {
             switchJob({id: row.id},this.token).then(res => {
                 if (res.success) {    
-                    row.running = !row.running
+                    row.status = row.status == 1? 0:1
                 }else { 
                     this.$message.error(res.msg || "unkown err");
                 }
@@ -234,7 +252,7 @@ export default {
         handleEdit(row,column,event) {
             this.form = row;
             this.edit = true;
-            this.dialogTitle = 'Job - '+ row.algorithm;
+            this.dialogTitle = 'Job - '+ row.name;
             this.editVisible = true;
         },
         // 保存编辑
@@ -258,6 +276,37 @@ export default {
         handlePageChange(val) {
             this.$set(this.query, 'pageIndex', val);
             this.getData();
+        },
+        composeValue(name, row) {
+            return {
+                name: name,
+                row: row,
+            }
+        },
+        handleCommand(cmd) {
+            if (cmd.name == "run" || cmd.name == "stop") {
+                this.handleSwitch(cmd.row);
+            }else if (cmd.name == "restart") {
+                if (cmd.row.status == 1) {
+                    this.handleSwitch(cmd.row);
+                    setTimeout(() => {
+                        this.handleSwitch(cmd.row);
+                    }, 2000);
+                }else{
+                    this.handleSwitch(cmd.row);
+                }
+            }
+        },
+        tranformStatus(code) {
+            if (code == 1) {
+                return 'Running';
+            }else if (code == 0) {
+                return 'Stop';
+            }else if (code == 2) {
+                return 'Error';
+            }else {
+                return 'UnKnow';
+            }
         }
     }
 };
@@ -291,5 +340,35 @@ export default {
     margin: auto;
     width: 40px;
     height: 40px;
+}
+
+span {
+    margin-left: 5px;
+}
+
+.el-icon-video-pause {
+    font-size: 16px;
+    color: red;
+}
+
+.el-icon-video-play {
+    font-size: 16px;
+    color: rgb(10, 212, 70);
+}
+
+.name {
+    color: #1E2736;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.description {
+    font-size:8px;
+    color: grey;
+}
+
+.el-icon-more {
+    cursor: pointer;
+    color: #8492a6;
+    font-size: 20px;
 }
 </style>
