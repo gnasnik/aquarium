@@ -50,7 +50,7 @@ func AddJob(sess *xorm.Session, Job *mod.Job) error {
 
 func UpdateJob(sess *xorm.Session, Job *mod.Job) error {
 	cond := &mod.Job{ID: Job.ID}
-	_, err := sess.Update(Job, cond)
+	_, err := sess.UseBool("running").Update(Job, cond)
 	if err != nil {
 		log.Err("update Job failed, %v", err)
 		return err

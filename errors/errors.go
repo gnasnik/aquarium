@@ -18,16 +18,6 @@ const (
 	TokenCreateFailed
 )
 
-// exchange error
-const (
-	ListJobFailed ErrorCode = iota + 30001
-	AddJobFailed
-	UpdateJobFailed
-	JobNotFound
-	InvalidJobID
-	DeleteJobFailed
-)
-
 // user error
 const (
 	GeneratePasswordFailed ErrorCode = iota + 20001
@@ -68,6 +58,17 @@ const (
 	SwitchTraderFailed
 )
 
+// job error
+const (
+	ListJobFailed ErrorCode = iota + 60001
+	AddJobFailed
+	UpdateJobFailed
+	JobNotFound
+	InvalidJobID
+	DeleteJobFailed
+	InvalidJob
+)
+
 var Error = map[ErrorCode]error{
 	InvalidRequestParams: errors.New("invalid request params"),
 	MissingRequestParams: errors.New("missing request params"),
@@ -103,6 +104,14 @@ var Error = map[ErrorCode]error{
 	InvalidTraderID:    errors.New("trader id must not emtpty"),
 	DeleteTraderFailed: errors.New("delete trader failed"),
 	SwitchTraderFailed: errors.New("switch trader failed"),
+
+	// JOB
+	AddJobFailed:    errors.New("add new job failed"),
+	UpdateJobFailed: errors.New("update job failed"),
+	JobNotFound:     errors.New("job not found"),
+	InvalidJobID:    errors.New("invalid job id"),
+	DeleteJobFailed: errors.New("delete job failed"),
+	InvalidJob:      errors.New("invalid job"),
 }
 
 func GetMsg(e ErrorCode) string {

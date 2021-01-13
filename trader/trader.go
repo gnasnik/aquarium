@@ -7,6 +7,7 @@ import (
 	"github.com/frankffenn/aquarium/api"
 	"github.com/frankffenn/aquarium/comm"
 	"github.com/frankffenn/aquarium/sdk"
+	"github.com/frankffenn/aquarium/sdk/mod"
 	"github.com/frankffenn/aquarium/utils/log"
 	"github.com/robertkrimen/otto"
 	"golang.org/x/xerrors"
@@ -26,7 +27,7 @@ func Switch(id int64) error {
 
 func GetTraderStatus(id int64) bool {
 	if t, ok := Executor[id]; ok && t != nil {
-		return t.Running
+		return t.Status == mod.JSRunning
 	}
 	return false
 }
@@ -45,7 +46,7 @@ func run(id int64) error {
 			}
 		}()
 		job.LastRunAt = time.Now()
-		job.Running = true
+		job.Status = mod.JSRunning
 		if job.Algorithm.Script == "" {
 			log.Errw("empty script", "aligorithm id", job.Algorithm.ID)
 			return
@@ -73,12 +74,12 @@ func stop(id int64) error {
 		return xerrors.New("Can not found the Trader")
 	}
 	Executor[id].Ctx.Interrupt <- func() { panic(errHalt) }
-	Executor[id].Job.Running = false
+	Executor[id].Job.Status = mod.JSStop
 	return nil
 }
 
 func initialize(id int64) (*Global, error) {
-	if t := Executor[id]; t != nil && t.Running {
+	if t := Executor[id]; t != nil && t.Status == mod.JSRunning {
 		return nil, nil
 	}
 

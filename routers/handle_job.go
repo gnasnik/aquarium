@@ -56,7 +56,7 @@ func ListJobHandler(c *gin.Context) {
 		if _, ok := traderx.Executor[trader.ID]; !ok {
 			continue
 		}
-		jobs[i].Running = traderx.Executor[trader.ID].Running
+		jobs[i].Status = traderx.Executor[trader.ID].Status
 	}
 
 	c.JSON(http.StatusOK, ResponseSuccess(comm.JsonObj{
@@ -93,7 +93,8 @@ func PutJobHandler(c *gin.Context) {
 		}
 		job.AlgorithmID = req.AlgorithmID
 		job.ExchangeID = req.ExchangeID
-		job.Running = req.Running
+		job.Status = req.Status
+		job.Description = req.Description
 		if err := sdk.UpdateJob(ctx, job); err != nil {
 			c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.UpdateJobFailed))
 			return
@@ -167,13 +168,24 @@ func SwitchJobHandler(c *gin.Context) {
 		return
 	}
 
+	if job.Status != mod.JSRunning && job.Status != mod.JSStop {
+		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.InvalidJob))
+		return
+	}
+
 	if err := traderx.Switch(p.ID); err != nil {
 		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.SwitchTraderFailed))
 		return
 	}
 
 	job.LastRunAt = time.Now()
-	job.Running = !job.Running
+	if job.Status == mod.JSRunning {
+		job.Status = mod.JSStop
+	}
+	if job.Status == mod.JSStop {
+		job.Status = mod.JSRunning
+	}
+
 	if err := sdk.UpdateJob(ctx, job); err != nil {
 		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.UpdateJobFailed))
 		return
