@@ -40,8 +40,8 @@ func ListJobLogHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, ResponseSuccess(comm.JsonObj{
-		"total":    total,
-		"job_logs": logs,
+		"total":   total,
+		"jobLogs": logs,
 	}))
 
 }

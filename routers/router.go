@@ -107,5 +107,9 @@ func InitRouter() *gin.Engine {
 	trad.POST("/del", DeleteTraderHandler)
 	trad.POST("/switch", SwitchTraderHandler)
 
+	lg := apiV1.Group("/log")
+	lg.Use(AuthUserMiddleware.MiddlewareFunc())
+	lg.GET("/list", ListJobLogHandler)
+
 	return r
 }

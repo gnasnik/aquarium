@@ -10,13 +10,13 @@ import (
 func ListJobLog(sess *xorm.Session, id interface{}, size, page int64, order string) (int64, []*mod.JobLog, error) {
 	var out []*mod.JobLog
 	bean := &mod.JobLog{}
-	total, err := sess.Where("job_id = ?").Count(bean)
+	total, err := sess.Where("job_id = ?", id).Count(bean)
 	if err != nil {
 		log.Err("count Job log failed, %v", err)
 		return 0, nil, err
 	}
 	start, limit := int((page-1)*size), int(size)
-	err = sess.Where("job_id = ?").OrderBy(order).Limit(limit, start).Find(&out)
+	err = sess.Where("job_id = ?", id).OrderBy(order).Limit(limit, start).Find(&out)
 	if err != nil {
 		log.Err("list Job log failed, %v", err)
 		return 0, nil, err
