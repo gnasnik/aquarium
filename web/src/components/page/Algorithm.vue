@@ -28,6 +28,7 @@
                 empty-text="No Data"
                 header-cell-class-name="table-header"
                 @selection-change="handleSelectionChange"
+                @row-click="handleEdit"
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column v-if="false" prop="id" label="ID" width="100" align="center"></el-table-column>
@@ -51,7 +52,7 @@
         </div>
 
         <!-- 编辑弹出框 -->
-        <el-dialog title="NewTrader" :visible.sync="editVisible" width="30%">
+        <el-dialog title="New Algorithm" :visible.sync="editVisible" width="30%">
             <el-form ref="form" :model="form" label-width="100px" label-position="left">
                 <!-- <el-form-item label="Algorithm:">
                     <el-input v-model="form.algorithmName" disabled></el-input>
@@ -223,15 +224,6 @@ export default {
                     this.$message.error(res.msg || "unkown err");
                 }
             });
-        },
-        handleClickRun(index,row) {
-            swithTrader({id: row.id},this.token).then(res => {
-                if (res.success) {    
-                    row.status = !row.status
-                }else { 
-                    this.$message.error(res.msg || "unkown err");
-                }
-            })
         },
         // 保存编辑
         saveEdit() {
