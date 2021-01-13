@@ -42,6 +42,12 @@ export default new Router({
                     meta: { title: 'Editor' }
                 },
                 {
+                    path: '/log',
+                    name: 'log',
+                    component: () => import(/* webpackChunkName: "404" */ '../components/page/Log.vue'),
+                    meta: { title: 'Log' }
+                },
+                {
                     path: '/404',
                     component: () => import(/* webpackChunkName: "404" */ '../components/page/404.vue'),
                     meta: { title: '404' }

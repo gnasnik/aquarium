@@ -295,6 +295,8 @@ export default {
                 }else{
                     this.handleSwitch(cmd.row);
                 }
+            }else if (cmd.name == "viewlog") {
+                this.$router.push({path:"/log", name:"log", params:cmd.row});
             }
         },
         tranformStatus(code) {
