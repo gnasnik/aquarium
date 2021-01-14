@@ -52,7 +52,7 @@
                         <el-dropdown trigger="click" size="medium" @command="handleCommand">
                             <i class="el-icon-more"></i>
                             <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item icon="el-icon-switch-button" :command="composeValue('stop', scope.row)" v-if="scope.row.running">Job Stop</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-switch-button" :command="composeValue('stop', scope.row)" v-if="scope.row.status == 1">Job Stop</el-dropdown-item>
                                 <el-dropdown-item icon="el-icon-video-play" :command="composeValue('run', scope.row)" v-else>Job Run</el-dropdown-item>
                                 <el-dropdown-item icon="el-icon-refresh" :command="composeValue('restart', scope.row)">Job Restart</el-dropdown-item>
                                 <el-dropdown-item icon="el-icon-document" :command="composeValue('viewlog', scope.row)">View Log</el-dropdown-item>
