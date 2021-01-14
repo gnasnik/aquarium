@@ -21,7 +21,8 @@ export default {
         logInfo:[],
         query: {
             page: 1,
-            size: 20
+            size: 20,
+            type: "",
         },
       };
   },
@@ -49,7 +50,14 @@ export default {
         });
       },
       handleClick(tab, event) {
-        console.log(tab, event);
+        if (tab.name == "all") {
+            this.query.type = ""
+        }else if (tab.name == "info") {
+            this.query.type = "INFO"
+        }else if (tab.name == "error") {
+            this.query.type = "Error"
+        }
+        this.getLog();
       },
   }
 }
