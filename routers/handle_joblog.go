@@ -19,6 +19,7 @@ func ListJobLogHandler(c *gin.Context) {
 	jobId := com.StrTo(c.Query("job_id")).MustInt64()
 	page := com.StrTo(c.Query("page")).MustInt64()
 	size := com.StrTo(c.Query("size")).MustInt64()
+	logType := com.StrTo(c.Query("type")).String()
 	order := c.Query("order")
 
 	if page <= 0 {
@@ -33,7 +34,7 @@ func ListJobLogHandler(c *gin.Context) {
 		order = "created_at"
 	}
 
-	total, logs, err := sdk.ListJobLog(context.Background(), jobId, size, page, order)
+	total, logs, err := sdk.ListJobLog(context.Background(), jobId, logType, size, page, order)
 	if err != nil {
 		c.JSON(http.StatusOK, ResponseFailWithErrorCode(errors.ListJobFailed))
 		return

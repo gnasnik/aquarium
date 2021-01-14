@@ -7,16 +7,26 @@ import (
 	"github.com/go-xorm/xorm"
 )
 
-func ListJobLog(sess *xorm.Session, id interface{}, size, page int64, order string) (int64, []*mod.JobLog, error) {
+func ListJobLog(sess *xorm.Session, id interface{}, logType string, size, page int64, order string) (int64, []*mod.JobLog, error) {
 	var out []*mod.JobLog
 	bean := &mod.JobLog{}
-	total, err := sess.Where("job_id = ?", id).Count(bean)
+
+	s1 := sess.Where("job_id = ?", id)
+	if logType != "" {
+		s1 = s1.And("type = ?", logType)
+	}
+	total, err := s1.Count(bean)
 	if err != nil {
 		log.Err("count Job log failed, %v", err)
 		return 0, nil, err
 	}
+
+	sess = sess.Where("job_id = ?", id)
+	if logType != "" {
+		sess = sess.And("type = ?", logType)
+	}
 	start, limit := int((page-1)*size), int(size)
-	err = sess.Where("job_id = ?", id).OrderBy(order).Limit(limit, start).Find(&out)
+	err = sess.OrderBy(order).Limit(limit, start).Find(&out)
 	if err != nil {
 		log.Err("list Job log failed, %v", err)
 		return 0, nil, err
