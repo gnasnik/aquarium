@@ -2,6 +2,7 @@ package trader
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/frankffenn/aquarium/api"
@@ -153,6 +154,21 @@ func initialize(id int64) (*Global, error) {
 	global.Ctx.Set("G", global)
 	global.Ctx.Set("Exchange", global.ex)
 	global.Ctx.Set("E", global.ex)
+	global.Ctx.Set("__log__", func(call otto.FunctionCall) otto.Value {
+		m := ""
+		for _, v := range call.ArgumentList {
+			m = fmt.Sprintf("%s %s", m, v.String())
+		}
+		global.log <- &mod.JobLog{
+			Type:    mod.LogTypeInfo,
+			UserID:  job.UserID,
+			JobID:   job.ID,
+			Content: m,
+		}
+		return otto.Value{}
+	})
+	global.Ctx.Run("console.log = __log__;")
+
 	return global, nil
 }
 
