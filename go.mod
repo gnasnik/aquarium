@@ -4,7 +4,6 @@ go 1.14
 
 require (
 	github.com/appleboy/gin-jwt/v2 v2.6.3
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-sql-driver/mysql v1.5.0
@@ -16,7 +15,7 @@ require (
 	github.com/segmentio/ksuid v1.0.2
 	github.com/unknwon/com v1.0.1
 	go.uber.org/zap v1.15.0
-	golang.org/x/crypto v0.0.0-20190510104115-cbcb75029529
+	golang.org/x/crypto v0.1.0
 	golang.org/x/xerrors v0.0.0-20190717185122-a985d3407aa7
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gopkg.in/sourcemap.v1 v1.0.5 // indirect
